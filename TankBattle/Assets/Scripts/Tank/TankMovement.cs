@@ -5,7 +5,6 @@ using UnityEngine.UIElements;
 public class TankMovement : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rb;
-    private Vector3 _currentDirection;
     private float _currentSpeed;
 
     public void MoveTank(float acceleration, float maxSpeed, float rotationSpeed, Vector2 moveDirection)
