@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 4084420197134028253}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.08, y: 0.3, z: 1.37}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -46,8 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d112aa76148458428efa6fcd51a2372, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gun
+  _shellInfo:
+    Damage: 10
+    Penetration: 105
+    Speed: 10
   _reloadTime: 2
-  _projectileSpeed: 20
   _firePoint: {fileID: 5698440368032663887}
   _projectilePrefab: {fileID: 8307831970242787, guid: fe3d39bcadf042f4587b7d3e9d01b100, type: 3}
 --- !u!1 &6077648726708059683
@@ -165,7 +168,7 @@ Transform:
   m_GameObject: {fileID: 6224194140120378965}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 3}
+  m_LocalPosition: {x: 0, y: -0.5, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

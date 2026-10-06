@@ -1,17 +1,18 @@
 using System;
 using UnityEngine;
 
-public class TurretMovement : MonoBehaviour
+public class TurretMovement : MonoBehaviour, ITankPart
 {
     [SerializeField] private TrajectoryLine _trajectoryLine;
     [SerializeField] private float _lineLength;
+    [SerializeField] private PartContainer _partContainer;
+    public GameObject GameObject => gameObject;
+    public PartContainer PartContainer => _partContainer;
+
+
+    public TurretStats TurretStats;
 
     public event Action OnTurretRotationComplete;
-
-    void Start()
-    {
-        //OnTurretRotationComplete += () => Debug.Log("Shoot");
-    }
 
     public void RotateTurret(float rotationSpeed, Vector2 moveDirection)
     {

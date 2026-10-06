@@ -14,5 +14,5 @@ public interface IPooled
 
     public abstract void Initialize(GameObjectPool gameObjectPool);
 
-    public abstract void ReturnToPool();
+    public void ReturnToPool();
 }

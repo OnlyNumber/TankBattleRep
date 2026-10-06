@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 4283684088398959301}
   - component: {fileID: 7580836192090409554}
   - component: {fileID: 8399025005303784866}
+  - component: {fileID: 3595594085334223878}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -81,6 +82,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TurretMovement
   _trajectoryLine: {fileID: 8399025005303784866}
   _lineLength: 5
+  _partContainer: {fileID: 3595594085334223878}
+  TurretStats:
+    TurretRotationSpeed: 90
 --- !u!120 &7580836192090409554
 LineRenderer:
   serializedVersion: 3
@@ -204,6 +208,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrajectoryLine
   _lineRenderer: {fileID: 7580836192090409554}
+--- !u!114 &3595594085334223878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2618366525269818366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8772fccf7cdc4564ba18617cf367617d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PartContainer
+  TurretPlace: []
+  GunPlace:
+  - Parent: {fileID: 3661238712129927262}
 --- !u!1 &7058274171220882941
 GameObject:
   m_ObjectHideFlags: 0

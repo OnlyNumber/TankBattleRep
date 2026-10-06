@@ -11,9 +11,7 @@ GameObject:
   - component: {fileID: 7899630716903312587}
   - component: {fileID: 8695379709826070127}
   - component: {fileID: 7497850198381739596}
-  - component: {fileID: 504857900107156865}
   - component: {fileID: 8307831970242787}
-  - component: {fileID: 2954786308341529122}
   - component: {fileID: 1259505327597835215}
   m_Layer: 6
   m_Name: Projectile
@@ -94,27 +92,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &504857900107156865
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6201063219316984754}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8307831970242787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,19 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cd0e705b12797488c0351973c5ed41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
-  <ProjectileCollision>k__BackingField: {fileID: 2954786308341529122}
---- !u!114 &2954786308341529122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6201063219316984754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37bf82f79bb0d234f9ae03c4894a1465, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CollisionController
+  <ProjectileCollision>k__BackingField: {fileID: 0}
 --- !u!54 &1259505327597835215
 Rigidbody:
   m_ObjectHideFlags: 0
