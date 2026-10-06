@@ -48,7 +48,10 @@ public class EnemyAI : MonoBehaviour
 
 
         if (Vector3.Distance(myPosition, targetPosition) < enemySettings.StopMovingRange)
+        {
+            MyTank.MoveTank(Vector2.zero);
             return;
+        }
 
         if (_currentPath == null || _currentPath.corners[_currentPath.corners.Length - 1] != targetPosition)
             CalculatePath(myPosition, targetPosition);

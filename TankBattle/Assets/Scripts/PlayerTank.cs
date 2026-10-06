@@ -14,21 +14,16 @@ public class PlayerTank : MonoBehaviour
     {
         Vector2 leftJoystickValue = _playerInput.GetLeftJoystickValues();
 
-        if (Mathf.Abs(leftJoystickValue.y) > 0)
-        {
-            _playerTank.MoveTank(leftJoystickValue);
+        _playerTank.MoveTank(leftJoystickValue);
 
-        }
-        else
-            _playerTank.Decelerate();
-
-
+        #region RightJoystick
         Vector2 rightJoystickValue = _playerInput.GetRightJoystickValues();
 
         if (Mathf.Abs(rightJoystickValue.y) > 0 && Mathf.Abs(rightJoystickValue.x) > 0)
             _playerTank.RotateTurret(rightJoystickValue);
         else
             _playerTank.TankTurret.ClearLine();
+        #endregion
     }
 
 }

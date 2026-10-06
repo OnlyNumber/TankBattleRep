@@ -12,12 +12,16 @@ public class TankBehaviour : MonoBehaviour
     {
         Initialize();
     }
-    
+
     public void Initialize()
     {
-        
+        TankMovement.Initialize(
+            HullArmor.HullStats.Acceleration,
+            HullArmor.HullStats.Decceleration,
+            HullArmor.HullStats.MaxSpeed,
+            HullArmor.HullStats.RotationSpeed);
     }
-    
+
     public void MoveTank(Vector3 direction)
     {
         MoveTank(new Vector2(direction.x, direction.z));
@@ -25,17 +29,9 @@ public class TankBehaviour : MonoBehaviour
 
     public void MoveTank(Vector2 direction)
     {
-        TankMovement.MoveTank(
-            HullArmor.HullStats.Acceleration,
-            HullArmor.HullStats.MaxSpeed,
-            HullArmor.HullStats.RotationSpeed,
-            direction);
+        TankMovement.SetMoveDirection(direction);
     }
 
-    public void Decelerate()
-    {
-        TankMovement.Decelerate(HullArmor.HullStats.Decceleration);
-    }
 
     public void RotateTurret(Vector3 direction)
     {
