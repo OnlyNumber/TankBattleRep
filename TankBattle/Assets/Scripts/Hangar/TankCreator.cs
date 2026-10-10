@@ -1,49 +1,116 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Cysharp.Threading.Tasks;
-using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Zenject.SpaceFighter;
 
 public class TankCreator : MonoBehaviour
 {
+
+
     [Tooltip("1-Hull, 2-Turret, 3-Gun")]
     public List<Button> SectionButtons;
 
-    #region Prefabs
-    private HullArmor[] _hullArmorList;
-    private TurretMovement[] _turretsList;
-    private Gun[] _gunsList;
+    #region Part Prefabs
+
+    private List<ITankPart> _allParts = new();
     #endregion
 
+    [SerializeField] private TankBehaviour _firstTank;
     [SerializeField] private PartButton _partButtonPrefab;
     [SerializeField] private RectTransform _partButtonParent;
 
     [SerializeField] private PartSlot _partSlotPrefab;
     [SerializeField] private List<PartSlot> _partSlotsList;
 
-
-
     private List<PartButton> _createdButtons = new();
     private ITankPart _currentPart;
     private ITankPart _currentHull;
 
+    private int _currentSort;
+
     private void Start()
     {
-        _hullArmorList = PartsLoader.LoadParts<HullArmor>();
-        _gunsList = PartsLoader.LoadParts<Gun>();
-        _turretsList = PartsLoader.LoadParts<TurretMovement>();
+        PlayerInstance.Instance.OnDataLoaded += Initialize;
 
-        SectionButtons[0].onClick.AddListener(() => CreatePartButtons(_hullArmorList));
-        SectionButtons[1].onClick.AddListener(() => CreatePartButtons(_turretsList));
-        SectionButtons[2].onClick.AddListener(() => CreatePartButtons(_gunsList));
+        SectionButtons[0].onClick.AddListener(() =>
+        {
+            ClearButtons();
+            CreatePartButtons(_allParts);
+            _currentSort = -1;
+        });
+
+
+        SectionButtons[1].onClick.AddListener(() =>
+        {
+            ClearButtons();
+            CreatePartButtons(GetSortedParts(PartType.Hull));
+
+        });
+        SectionButtons[2].onClick.AddListener(() =>
+        {
+            ClearButtons();
+            CreatePartButtons(GetSortedParts(PartType.Turret));
+
+        }); 
+        SectionButtons[3].onClick.AddListener(() =>
+        {
+            ClearButtons();
+            CreatePartButtons(GetSortedParts(PartType.Gun));
+
+        });
+
     }
+
+    private void Initialize()
+    {
+        PlayerInstance.Instance.OnDataPartsUpdated += UpdateData;
+
+        PlayerInstance.Instance.PlayerData.CurrentTank = null;
+
+        if (PlayerInstance.Instance.PlayerData.CurrentTank == null)
+        {
+            GetFirstTank();
+            PlayerInstance.Instance.Save();
+        }
+
+        ClearHull();
+        _currentHull = PartSaveToTankParts(PlayerInstance.Instance.PlayerData.CurrentTank);
+
+        UpdateData();
+
+    }
+
+    private void UpdateData()
+    {
+        ClearButtons();
+        _allParts.Clear();
+
+        foreach (var item in PlayerInstance.Instance.PlayerData.InventoryParts)
+        {
+            _allParts.Add(PartsLoader.LoadPart(item.PartName, item.PartType).GetComponent<ITankPart>());
+
+        }
+
+        if (_currentSort == -1)
+            CreatePartButtons(_allParts);
+        else
+            CreatePartButtons(GetSortedParts((PartType)_currentSort));
+
+    }
+
+
+    private void GetFirstTank()
+    {
+        _firstTank.HullArmor.PartContainer.FindMyParts();
+        _firstTank.HullArmor.PartContainer.TurretPlace[0].Part.PartContainer.FindMyParts();
+        PlayerInstance.Instance.PlayerData.CurrentTank = TankPartsToPartSave(_firstTank.HullArmor);
+    }
+
 
     private void Update()
     {
@@ -56,11 +123,27 @@ public class TankCreator : MonoBehaviour
         }
     }
 
-    private void CreatePartButtons(ITankPart[] parts)
+    private List<ITankPart> GetSortedParts(PartType partType)
     {
-        ClearButtons();
+        _currentSort = (int)partType;
 
-        for (int i = 0; i < parts.Length; i++)
+        List<ITankPart> parts = new();
+        Type type = PartTypeSwitcher.GetTypeByEnum(partType);
+
+        foreach (var item in _allParts)
+        {
+            if (item.GetType() == type)
+                parts.Add(item);
+        }
+
+        return parts;
+    }
+
+    private void CreatePartButtons(List<ITankPart> parts)
+    {
+        //ClearButtons();
+
+        for (int i = 0; i < parts.Count; i++)
         {
             int index = i;
 
@@ -91,7 +174,7 @@ public class TankCreator : MonoBehaviour
         ShowSlots(true);
     }
 
-    private ITankPart CreatePart(ITankPart tankPartPrefab)
+    private static ITankPart CreatePart(ITankPart tankPartPrefab)
     {
         var part = Instantiate(tankPartPrefab.GameObject).GetComponent<ITankPart>();
         part.GameObject.name = tankPartPrefab.GameObject.name;
@@ -158,17 +241,17 @@ public class TankCreator : MonoBehaviour
         }
     }
 
-    private List<ITankPart> GetPartsList()
+    private static List<ITankPart> GetPartsList(ITankPart FirstPart)
     {
         List<ITankPart> allParts = new();
 
         Queue<ITankPart> partQueue = new();
-        if (_currentHull == null)
+        if (FirstPart == null)
             return allParts;
 
 
-        partQueue.Enqueue(_currentHull);
-        allParts.Add(_currentHull);
+        partQueue.Enqueue(FirstPart);
+        allParts.Add(FirstPart);
 
         ITankPart currentQueuePart;
 
@@ -225,41 +308,27 @@ public class TankCreator : MonoBehaviour
 
     private void ClearHull()
     {
-        foreach (var item in GetPartsList())
+        foreach (var item in GetPartsList(_currentHull))
         {
             Destroy(item.GameObject);
         }
 
-        _hullArmorList = null;
     }
 
     #region Save and Load
-    private PartSave testSave;
 
-
-    [ContextMenu("TestSave")]
-    private void TestSave()
-    {
-        var path = Path.Combine(Application.persistentDataPath, "Saves", "PlayerSave.json");
-
-        JsonDataLoader.SaveAsync(path, SaveBuild()).Forget();
-    }
-
-    [ContextMenu("TestLoadBuild")]
-    public void TestLoadBuild()
-    {
-        LoadGameAsync().Forget();
-    }
-    public PartSave SaveBuild()
+    public static PartSave TankPartsToPartSave(ITankPart hullTankPart)
     {
         Dictionary<ITankPart, PartSave> partsToSave = new();
         Queue<ITankPart> partQueue = new();
 
-        partQueue.Enqueue(_currentHull);
+        Debug.Log(hullTankPart.GameObject.transform.parent.name);
+
+        partQueue.Enqueue(hullTankPart);
         ITankPart currentQueuePart;
         PartSave currentPartSave;
 
-        partsToSave.Add(_currentHull, ConversionFromPart(_currentHull));
+        partsToSave.Add(hullTankPart, ConversionFromPart(hullTankPart));
 
         while (partQueue.Count != 0)
         {
@@ -297,24 +366,20 @@ public class TankCreator : MonoBehaviour
             }
         }
 
-        return partsToSave[_currentHull];
+        return partsToSave[hullTankPart];
     }
 
-    public void LoadBuild(PartSave loadingPart)
+    public static ITankPart PartSaveToTankParts(PartSave loadingPart)
     {
-        ClearHull();
 
+        ITankPart firstPart;
 
         Dictionary<PartSave, ITankPart> convertedParts = new();
         Queue<PartSave> partQueue = new();
 
-        if (loadingPart == null)
-            Debug.Log("loadingPart == null");
-        Debug.Log(loadingPart.PartName);
+        firstPart = CreatePart(PartsLoader.LoadPart(loadingPart.PartName, loadingPart.PartType).GetComponent<HullArmor>());
 
-        _currentHull = CreatePart(PartsLoader.LoadPart(loadingPart.PartName, loadingPart.PartType).GetComponent<HullArmor>());
-
-        convertedParts.Add(loadingPart, _currentHull);
+        convertedParts.Add(loadingPart, firstPart);
 
         partQueue.Enqueue(loadingPart);
         ITankPart currentQueuePart;
@@ -357,22 +422,12 @@ public class TankCreator : MonoBehaviour
             }
         }
 
-    }
+        return firstPart;
 
-
-
-    public async UniTask<PartSave> LoadGameAsync()
-    {
-        var path = Path.Combine(Application.persistentDataPath, "Saves", "PlayerSave.json");
-
-        testSave = await JsonDataLoader.LoadAsync<PartSave>(path);
-
-        LoadBuild(testSave);
-        return testSave;
     }
     #endregion
 
-    private PartSave ConversionFromPart(ITankPart part)
+    public static PartSave ConversionFromPart(ITankPart part)
     {
         if (part == null)
             return null;

@@ -2,16 +2,27 @@ using UnityEngine;
 
 public class PlayerTank : MonoBehaviour
 {
-    [SerializeField] private PlayerInput _playerInput;
-    [SerializeField] private TankBehaviour _playerTank;
+    private PlayerInput _playerInput;
+    private TankBehaviour _playerTank;
 
-    private void Start()
+    private bool _isInitialize;
+
+    public void Initialize(TankBehaviour playerTank, PlayerInput playerInput)
     {
+        _playerInput = playerInput;
+        _playerTank = playerTank;
+
         _playerTank.TankTurret.OnTurretRotationComplete += _playerTank.TankCannon.TryShoot;
+
+        _isInitialize = true;
     }
+
 
     void Update()
     {
+        if (!_isInitialize)
+            return;
+
         Vector2 leftJoystickValue = _playerInput.GetLeftJoystickValues();
 
         _playerTank.MoveTank(leftJoystickValue);

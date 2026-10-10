@@ -12,7 +12,7 @@ public interface IPooled
         get;
     }
 
-    public abstract void Initialize(GameObjectPool gameObjectPool);
+    public abstract void InitializePool(GameObjectPool gameObjectPool);
 
     public void ReturnToPool();
 }

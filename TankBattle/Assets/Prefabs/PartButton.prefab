@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1481883404033344840
 CanvasRenderer:
@@ -134,6 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25aed7839cd17cc40adfbf2f9c166851, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PartButton
+  RectTransform: {fileID: 22087922000798193}
   Button: {fileID: 4928976212591439361}
   Text: {fileID: 5993766046553113755}
 --- !u!1 &7940644905100648306

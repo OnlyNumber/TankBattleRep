@@ -19,7 +19,7 @@ public class Projectile : MonoBehaviour, IPooled
 
     private CancellationTokenSource _cts;
 
-    public void Initialize(GameObjectPool gameObjectPool)
+    public void InitializePool(GameObjectPool gameObjectPool)
     {
         _gameObjectPool = gameObjectPool;
     }

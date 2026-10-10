@@ -6,35 +6,13 @@ public class HullArmor : MonoBehaviour, ITankPart
 {
 
     public int MaxHealth;
-    private HealthSystem _health;
-    
     public HullStats HullStats;
-    
+
     public List<ArmorStat> armorStats = new();
     [SerializeField] private PartContainer _partContainer;
 
     public GameObject GameObject => gameObject;
     public PartContainer PartContainer => _partContainer;
-
-    void Start()
-    {
-        _health = new HealthSystem(MaxHealth);
-    }
-
-    public int GetCurrentHealth()
-    {
-        return _health.CurrentHealth;
-    }
-    
-    public void Changehealth(int changedHealth)
-    {
-        _health.CurrentHealth += changedHealth;
-    }
-
-    public void AddOnTakeDamage(Action action)
-    {
-        _health.OnHealthChanged += action;
-    }
 
     public ArmorStat GetArmorStat(Collider collider)
     {
@@ -45,6 +23,40 @@ public class HullArmor : MonoBehaviour, ITankPart
         }
 
         return new ArmorStat();
+    }
+
+    public List<Description> GetDescriptions()
+    {
+        List<Description> descriptions = new()
+        {
+            new Description("Health", MaxHealth.ToString()),
+            new Description("Acceleration", HullStats.Acceleration.ToString()),
+            new Description("Decceleration", HullStats.Decceleration.ToString()),
+            new Description("MaxSpeed", HullStats.MaxSpeed.ToString()),
+            new Description("RotationSpeed", HullStats.RotationSpeed.ToString()),
+
+            GetArmorDescription(ArmorSide.Front),
+            GetArmorDescription(ArmorSide.Side),
+            GetArmorDescription(ArmorSide.Rear),
+/*
+            new Description("Front armor", HullStats.Decceleration.ToString()),
+            new Description("Side armor", HullStats.MaxSpeed.ToString()),
+            new Description("Rear armor", HullStats.RotationSpeed.ToString()),
+*/
+        };
+
+        return descriptions;
+    }
+
+    private Description GetArmorDescription(ArmorSide armorSide)
+    {
+        foreach (var item in armorStats)
+        {
+            if (item.Side == armorSide)
+                return new Description(item.Side.ToString(), item.ArmorThickness.ToString());
+        }
+
+        return null;
     }
 }
 
@@ -61,5 +73,5 @@ public enum ArmorSide
 {
     Front,
     Side,
-    rear
+    Rear
 }

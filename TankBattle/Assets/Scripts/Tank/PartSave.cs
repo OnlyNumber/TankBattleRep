@@ -9,12 +9,12 @@ public class PartSave
     //For loading from resources
     public string PartName;
 
-    public List<IDK> PartSlotsTurret = new();
-    public List<IDK> PartSlotsGuns = new();
+    public List<PartSaveSlotInfo> PartSlotsTurret = new();
+    public List<PartSaveSlotInfo> PartSlotsGuns = new();
 
-    public void AddToList(List<IDK> list, int partIndex, PartSave partSave)
+    public void AddToList(List<PartSaveSlotInfo> list, int partIndex, PartSave partSave)
     {
-        var hz = new IDK();
+        var hz = new PartSaveSlotInfo();
         hz.partIndex = partIndex;
         hz.partSave = partSave;
 
@@ -25,7 +25,7 @@ public class PartSave
 }
 
 [System.Serializable]
-public struct IDK
+public struct PartSaveSlotInfo
 {
     public int partIndex;
     public PartSave partSave;

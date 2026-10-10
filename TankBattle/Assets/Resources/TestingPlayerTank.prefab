@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2075296132517487046}
   - component: {fileID: 8141294019940362427}
   m_Layer: 0
-  m_Name: TestingTank
+  m_Name: TestingPlayerTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91,6 +91,7 @@ MonoBehaviour:
   HullArmor: {fileID: 4234240393103402449}
   TankTurret: {fileID: 6912523862368318071}
   TankCannon: {fileID: 536514210250101432}
+  MaxHealth: 125
 --- !u!1001 &6122761218341350623
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface ITankPart
@@ -10,4 +11,6 @@ public interface ITankPart
     {
         get;
     }
+
+    public List<Description> GetDescriptions();
 }

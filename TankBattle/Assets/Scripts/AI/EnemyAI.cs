@@ -7,16 +7,20 @@ using Unity.VisualScripting;
 
 public class EnemyAI : MonoBehaviour
 {
-    public NavMeshSurface navMeshSurface;
-
-    public TankBehaviour MyTank;
-    public TankBehaviour TargetTank;
+    [SerializeField] private TankBehaviour MyTank;
+    [SerializeField] private TankBehaviour TargetTank;
 
     private CancellationTokenSource _cts;
 
     public EnemySettings enemySettings;
     private NavMeshPath _currentPath;
     private int _currentPathIndex;
+
+    public void Initialize(TankBehaviour controllingTank, TankBehaviour targetTank)
+    {
+        MyTank = controllingTank;
+        TargetTank = targetTank;
+    }
 
     [ContextMenu("ActivateAI")]
     public void ActivateAI()
@@ -34,6 +38,9 @@ public class EnemyAI : MonoBehaviour
     {
         while (!_cts.IsCancellationRequested)
         {
+            if (MyTank == null)
+                _cts.Cancel();
+
             GoToTheTarget();
             TryShootTarget();
 
@@ -43,6 +50,9 @@ public class EnemyAI : MonoBehaviour
 
     public void GoToTheTarget()
     {
+        if (MyTank == null || MyTank.transform == null)
+            return;
+
         Vector3 myPosition = MyTank.transform.position;
         Vector3 targetPosition = TargetTank.transform.position;
 
@@ -65,6 +75,8 @@ public class EnemyAI : MonoBehaviour
     public void TryShootTarget()
     {
 
+        if (MyTank == null || MyTank.transform == null)
+            return;
         Vector3 myPosition = MyTank.transform.position;
         Vector3 targetPosition = TargetTank.transform.position;
 
@@ -83,12 +95,6 @@ public class EnemyAI : MonoBehaviour
 
         NavMesh.CalculatePath(startPosition, endPosition, NavMesh.AllAreas, _currentPath);
     }
-
-    private void OnDrawGizmos()
-    {
-        //Gizmos.DrawRay(MyTank.transform.position, (_currentPath.corners[_currentPathIndex] - transform.position).normalized);
-    }
-
 }
 
 [System.Serializable]

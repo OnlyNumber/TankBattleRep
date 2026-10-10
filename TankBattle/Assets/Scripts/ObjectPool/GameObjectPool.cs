@@ -28,7 +28,7 @@ public class GameObjectPool
     {
         var createdPooledObject = GameObject.Instantiate(_prefab.GameObject).GetComponent<IPooled>();
         createdPooledObject.GameObject.transform.SetParent(_parentObjectPool);
-        createdPooledObject.Initialize(this);
+        createdPooledObject.InitializePool(this);
 
         return createdPooledObject;
     }

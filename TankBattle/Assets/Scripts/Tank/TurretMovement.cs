@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TurretMovement : MonoBehaviour, ITankPart
@@ -34,5 +35,13 @@ public class TurretMovement : MonoBehaviour, ITankPart
         _trajectoryLine.SetPositions(Vector3.zero, Vector3.zero);
     }
 
+    public List<Description> GetDescriptions()
+    {
+        List<Description> descriptions = new()
+        {
+            new Description("Rotation speed", TurretStats.TurretRotationSpeed.ToString())
+        };
 
+        return descriptions;
+    }
 }

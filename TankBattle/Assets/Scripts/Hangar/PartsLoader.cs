@@ -9,7 +9,6 @@ public static class PartsLoader
     private const string Guns_Path = "Parts/Guns";
 
 
-
     private static T[] LoadParts<T>(string path)
     {
         var list = Resources.LoadAll(path, typeof(T)).Cast<T>().ToArray();
@@ -36,7 +35,9 @@ public static class PartsLoader
     public static GameObject LoadPart(string name, PartType partType)
     {
         
-
+        try
+        {
+            
         switch (partType)
         {
             case PartType.Hull:
@@ -45,6 +46,11 @@ public static class PartsLoader
                 return Resources.Load<TurretMovement>(Turrets_Path + "/" + name).gameObject;
             case PartType.Gun:
                 return Resources.Load<Gun>(Guns_Path + "/" + name).gameObject;
+        }
+        }
+        catch
+        {
+            Debug.Log(name);
         }
 
         return null;

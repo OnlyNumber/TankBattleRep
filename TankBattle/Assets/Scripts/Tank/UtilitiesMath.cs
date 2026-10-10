@@ -5,6 +5,8 @@ public static class UtilitiesMath
     public static void CalculateHit(RaycastHit hitInfo, ShellInfo shellInfo, Vector3 direction)
     {
         var hullArmor = hitInfo.collider.GetComponentInParent<HullArmor>();
+        var tankBehaviour = hitInfo.collider.GetComponentInParent<TankBehaviour>();
+
 
         if (hullArmor == null)
             return;
@@ -27,7 +29,7 @@ public static class UtilitiesMath
                 damage = (int)((float)damage * 1.25f);
 
                 break;
-            case ArmorSide.rear:
+            case ArmorSide.Rear:
                 damage = (int)((float)damage * 1.5f);
 
                 break;
@@ -35,9 +37,9 @@ public static class UtilitiesMath
 
         if (shellInfo.Penetration >= effectiveArmor)
         {
-            hullArmor.Changehealth(-damage);
+            tankBehaviour.TankHealthSystem.CurrentHealth -= damage;
 
-            Debug.Log("Last health " + hullArmor.GetCurrentHealth());
+            Debug.Log("Last health " + tankBehaviour.TankHealthSystem.CurrentHealth);
         }
         else
         {

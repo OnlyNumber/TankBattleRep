@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -17,6 +19,8 @@ public class Gun : MonoBehaviour, ITankPart
 
 
     private bool _isReadyForShoot = true;
+    private Stopwatch stopwatch = new();
+
 
     public void TryShoot()
     {
@@ -32,8 +36,9 @@ public class Gun : MonoBehaviour, ITankPart
 
         projectile.OnHit += ReactionCollision;
 
-        Reload(this.GetCancellationTokenOnDestroy()).Forget();
+        UniTask task = Reload(this.GetCancellationTokenOnDestroy());
 
+        //task.exis
     }
 
     private void ReactionCollision(Projectile projectile, RaycastHit hit, Vector3 direction)
@@ -43,11 +48,30 @@ public class Gun : MonoBehaviour, ITankPart
         projectile.ReturnToPool();
     }
 
-    public async UniTaskVoid Reload(CancellationToken ct)
+    public float GetCurretTime()
     {
+        return (float)stopwatch.Elapsed.TotalSeconds / _reloadTime;
+    }
+
+    public async UniTask Reload(CancellationToken ct)
+    {
+        stopwatch.Restart();
         await UniTask.Delay(TimeSpan.FromSeconds(_reloadTime), cancellationToken: ct);
 
         _isReadyForShoot = true;
+        stopwatch.Stop();
     }
 
+    public List<Description> GetDescriptions()
+    {
+        List<Description> descriptions = new()
+        {
+            new Description("Reload", _reloadTime.ToString()),
+            new Description("Speed", _shellInfo.Speed.ToString()),
+            new Description("Penetration", _shellInfo.Penetration.ToString()),
+            new Description("Damage", _shellInfo.Damage.ToString())
+        };
+
+        return descriptions;
+    }
 }
