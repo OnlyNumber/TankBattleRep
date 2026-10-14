@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1792305123814036072}
   - component: {fileID: 6019762628789681767}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,6 +53,7 @@ MonoBehaviour:
   _reloadTime: 2
   _firePoint: {fileID: 5698440368032663887}
   _projectilePrefab: {fileID: 8307831970242787, guid: fe3d39bcadf042f4587b7d3e9d01b100, type: 3}
+  _partContainer: {fileID: 0}
 --- !u!1 &6077648726708059683
 GameObject:
   m_ObjectHideFlags: 0
@@ -64,7 +65,8 @@ GameObject:
   - component: {fileID: 1536514267677017157}
   - component: {fileID: 8706177258132643785}
   - component: {fileID: 4979269166701320551}
-  m_Layer: 0
+  - component: {fileID: 1542976972336398287}
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,6 +145,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1542976972336398287
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6077648726708059683}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &6224194140120378965
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +176,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5698440368032663887}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

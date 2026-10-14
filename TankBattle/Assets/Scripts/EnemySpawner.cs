@@ -10,14 +10,15 @@ public class EnemySpawner
 
     [SerializeField] private TankBehaviour enemyTankPrefab;
     [SerializeField] private EnemyAI enemyAIPrefab;
-    [SerializeField] private FollowingHealthBar healthBarPrefab ;
+    [SerializeField] private FollowingHealthBar healthBarPrefab;
 
     //TODO: Change to Zenject
 
     [SerializeField] private List<Transform> _spawnPositions;
 
     [SerializeField] private int waveCount;
-    [field: SerializeField] public int EnemiesPerWave
+    [field: SerializeField]
+    public int EnemiesPerWave
     {
         get;
         private set;
@@ -62,17 +63,20 @@ public class EnemySpawner
             var tankAI = GameObject.Instantiate(enemyAIPrefab);
             var tankHealthBar = GameObject.Instantiate(healthBarPrefab);
 
+            tank.SetUpParts(tank.GetComponentInChildren<HullArmor>());
+            Debug.Log("Cannon " + tank.TankTurrets[0].gameObject.name);
 
+            Debug.Log("Cannon " + tank.TankCannon[0].gameObject.name);
             tank.Initialize();
             tank.transform.position = _spawnPositions[UnityEngine.Random.Range(0, _spawnPositions.Count)].position;
-            
+
             tankAI.transform.SetParent(ParentForAI);
             tankAI.Initialize(tank, _targetTank);
             tankAI.ActivateAI();
 
             tankHealthBar.Initialize(tank.transform, tank.TankHealthSystem);
 
-            tank.OnDeath +=DeathOfEnemy;
+            tank.OnDeath += DeathOfEnemy;
         }
     }
 

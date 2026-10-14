@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerData
 {
     public int MoneyCount;
-    public PartSave CurrentTank; 
+    public PartSave CurrentTank = null;
 
-    public List<PartSave> InventoryParts = new(); 
+    public List<PartSave> InventoryParts = new();
 }

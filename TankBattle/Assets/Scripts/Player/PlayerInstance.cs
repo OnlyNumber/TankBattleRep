@@ -48,6 +48,11 @@ public class PlayerInstance : MonoBehaviour
 
         PlayerData = await JsonDataLoader.LoadAsync<PlayerData>(path);
 
+        if (PlayerData == null)
+        {
+            PlayerData = new();
+            PlayerData.MoneyCount = 100;
+        }
         OnDataLoaded?.Invoke();
 
         return PlayerData;
@@ -56,8 +61,8 @@ public class PlayerInstance : MonoBehaviour
 
     public void ChangeMoney(int money)
     {
-         PlayerData.MoneyCount += money;
-         OnChangeMoney?.Invoke(PlayerData.MoneyCount);
+        PlayerData.MoneyCount += money;
+        OnChangeMoney?.Invoke(PlayerData.MoneyCount);
     }
 
     public void UpdateData()

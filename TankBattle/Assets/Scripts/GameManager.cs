@@ -33,11 +33,21 @@ public class GameManager : MonoBehaviour
         _playerTankControlling.Initialize(playerTank, _playerInput);
         _playerUI.Initialize(playerTank.TankHealthSystem);
 
+        foreach (var turret in playerTank.TankTurrets)
+        {
+            foreach (var cannon in TankBehaviour.FindParts<Gun>(turret.PartContainer.GunPlace))
+            {
+                turret.OnTurretRotationComplete += cannon.TryShoot;
+            }
+        }
 
-        var reloadIndicator = Instantiate(_gunReloadIndicatorPrefab);
-        reloadIndicator.Initialize(playerTank.TankCannon);
-        reloadIndicator.transform.SetParent(playerTank.TankCannon.transform);
-        reloadIndicator.transform.localPosition = new Vector3(0, 0.5f, 0);
+
+        /*
+                var reloadIndicator = Instantiate(_gunReloadIndicatorPrefab);
+                reloadIndicator.Initialize(playerTank.TankCannon);
+                reloadIndicator.transform.SetParent(playerTank.TankCannon.transform);
+                reloadIndicator.transform.localPosition = new Vector3(0, 0.5f, 0);
+        */
 
         _enemySpawner.Initialize(playerTank);
         _enemySpawner.OnDeathSpawnedUnit += _rewardGiver.GetRewardForEnemy;
@@ -46,7 +56,7 @@ public class GameManager : MonoBehaviour
 
         _enemySpawner.ActivateWaves();
 
-        
+
 
     }
 
@@ -55,7 +65,7 @@ public class GameManager : MonoBehaviour
         await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
 
         Initialize();
-    } 
+    }
 
     private TankBehaviour CreatePlayer()
     {

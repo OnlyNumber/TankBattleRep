@@ -79,7 +79,7 @@ public class Shop : MonoBehaviour
 
     private void BuyCurrentItem()
     {
-        PlayerInstance.Instance.ChangeMoney(_currentGoods.Price);
+        PlayerInstance.Instance.ChangeMoney(-_currentGoods.Price);
         PlayerInstance.Instance.PlayerData.InventoryParts.Add(TankCreator.ConversionFromPart(_currentGoods.TankPart));
 
         _partGoodsInfos.Remove(_currentGoods);

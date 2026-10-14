@@ -12,7 +12,7 @@ public static class SceneController
 
 public enum SceneIndex
 {
-    //MainMenu,
+    MainMenu,
     GamePlay,
     Hangar
 }

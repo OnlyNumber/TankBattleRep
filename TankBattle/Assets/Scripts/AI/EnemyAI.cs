@@ -84,7 +84,8 @@ public class EnemyAI : MonoBehaviour
         {
             MyTank.RotateTurret((targetPosition - myPosition).normalized);
 
-            MyTank.TankCannon.TryShoot();
+            foreach (var gun in MyTank.TankCannon)
+                gun.TryShoot();
         }
     }
 

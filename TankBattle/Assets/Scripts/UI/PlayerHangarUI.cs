@@ -1,8 +1,11 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHangarUI : MonoBehaviour
 {
     [SerializeField] private TMPro.TMP_Text _moneyText;
+    [SerializeField] private Button BattleButton;
+
 
     void Start()
     {
@@ -13,6 +16,7 @@ public class PlayerHangarUI : MonoBehaviour
     {
         PlayerInstance.Instance.OnChangeMoney += MomeyTextUpdate;
         _moneyText.text = PlayerInstance.Instance.PlayerData.MoneyCount.ToString();
+        BattleButton.onClick.AddListener(LoadBattle);
         PlayerInstance.Instance.OnDataLoaded -= Initialize;
 
     }
@@ -21,5 +25,10 @@ public class PlayerHangarUI : MonoBehaviour
     private void MomeyTextUpdate(int moneyCount)
     {
         _moneyText.text = moneyCount.ToString();
+    }
+
+    private void LoadBattle()
+    {
+        SceneController.LoadScene(SceneIndex.GamePlay);
     }
 }

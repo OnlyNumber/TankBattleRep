@@ -8,8 +8,8 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
     public TankMovement TankMovement;
     public HullArmor HullArmor;
-    public TurretMovement TankTurret;
-    public Gun TankCannon;
+    public List<TurretMovement> TankTurrets = new();
+    public List<Gun> TankCannon = new();
 
     public int MaxHealth;
     public HealthSystem TankHealthSystem
@@ -25,9 +25,12 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
     public Action<TankBehaviour> OnDeath;
 
+    private TurretGunner _turretGunner = new();
+
     public void Initialize()
     {
         TankHealthSystem = new HealthSystem(MaxHealth);
+        TankHealthSystem.OnHealthChanged += Death;
 
         TankMovement.Initialize(
             HullArmor.HullStats.Acceleration,
@@ -35,45 +38,57 @@ public class TankBehaviour : MonoBehaviour, IPooled
             HullArmor.HullStats.MaxSpeed,
             HullArmor.HullStats.RotationSpeed);
 
-        TankHealthSystem.OnHealthChanged += Death;
+        List<Collider> ignoreColliders = new();
+
+        if (HullArmor.ModelColldier != null)
+            ignoreColliders.Add(HullArmor.ModelColldier);
+
+        foreach (var item in HullArmor.armorStats)
+        {
+            ignoreColliders.Add(item.Collider);
+        }
+
+        _turretGunner.Initialize(TankTurrets, HullArmor.AimPosition, ignoreColliders);
     }
 
     public void SetUpParts(ITankPart mainHullPart)
     {
         HullArmor = mainHullPart as HullArmor;
-        TankTurret = FindTurrets(HullArmor)[0];
-        TankCannon = FindGuns(TankTurret)[0];
+        TankTurrets = FindParts<TurretMovement>(HullArmor.PartContainer.TurretPlace);
+
+        foreach (var item in TankTurrets)
+            TankCannon.AddRange(FindParts<Gun>(item.PartContainer.GunPlace));
     }
 
-    private List<TurretMovement> FindTurrets(ITankPart tankPart)
+    public static List<T> FindParts<T>(List<PartContainerSlot> slots) where T : ITankPart
     {
-        List<TurretMovement> turretParts = new();
+        List<T> parts = new();
 
-        foreach (var item in tankPart.PartContainer.TurretPlace)
+        foreach (var item in slots)
         {
-            if (item.Part != null && item.Part is TurretMovement turret)
-                turretParts.Add(turret);
+            if (item.Part != null && item.Part is T needPart)
+            {
+                parts.Add(needPart);
+                continue;
+            }
+
+            var child = item.Parent.GetChild(0);
+
+            if (child != null)
+            {
+                item.Part = child.GetComponent<ITankPart>();
+
+                if (item.Part is T needPart1)
+                {
+                    parts.Add(needPart1);
+                }
+
+            }
 
         }
 
-        return turretParts;
+        return parts;
     }
-
-    private List<Gun> FindGuns(ITankPart tankPart)
-    {
-        List<Gun> gunParts = new();
-
-        foreach (var item in tankPart.PartContainer.GunPlace)
-        {
-            if (item.Part != null && item.Part is Gun gun)
-                gunParts.Add(gun);
-
-        }
-
-        return gunParts;
-    }
-
-
 
     private void Death()
     {
@@ -96,12 +111,14 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
     public void RotateTurret(Vector3 direction)
     {
-        TankTurret.RotateTurret(TankTurret.TurretStats.TurretRotationSpeed, new Vector2(direction.x, direction.z));
+        _turretGunner.RotationInput(direction);
+        //TankTurret.RotateTurret(TankTurret.TurretStats.TurretRotationSpeed, new Vector2(direction.x, direction.z));
     }
 
     public void RotateTurret(Vector2 direction)
     {
-        TankTurret.RotateTurret(TankTurret.TurretStats.TurretRotationSpeed, direction);
+        RotateTurret(new Vector3(direction.x, 0, direction.y));
+        //TankTurret.RotateTurret(TankTurret.TurretStats.TurretRotationSpeed, direction);
     }
 
     public virtual void InitializePool(GameObjectPool gameObjectPool)

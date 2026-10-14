@@ -8,11 +8,18 @@ public class HullArmor : MonoBehaviour, ITankPart
     public int MaxHealth;
     public HullStats HullStats;
 
+    public Collider ModelColldier;
     public List<ArmorStat> armorStats = new();
     [SerializeField] private PartContainer _partContainer;
 
     public GameObject GameObject => gameObject;
     public PartContainer PartContainer => _partContainer;
+
+    [field: SerializeField] public Transform AimPosition
+    {
+        get;
+        private set;
+    }
 
     public ArmorStat GetArmorStat(Collider collider)
     {

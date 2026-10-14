@@ -15,11 +15,11 @@ public class TurretMovement : MonoBehaviour, ITankPart
 
     public event Action OnTurretRotationComplete;
 
-    public void RotateTurret(float rotationSpeed, Vector2 moveDirection)
+    public void RotateTurret(float rotationSpeed, Vector3 moveDirection)
     {
-        _trajectoryLine.SetPositions(transform.position, transform.position + new Vector3(moveDirection.x, 0, moveDirection.y).normalized * _lineLength);
+        _trajectoryLine.SetPositions(transform.position, transform.position + moveDirection.normalized * _lineLength);
 
-        Quaternion targetRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0, moveDirection.y), Vector3.up);
+        Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
 
         transform.rotation = Quaternion.RotateTowards(
                 transform.rotation,
@@ -28,6 +28,11 @@ public class TurretMovement : MonoBehaviour, ITankPart
 
         if (Mathf.Abs(transform.rotation.eulerAngles.y - targetRotation.eulerAngles.y) < 3)
             OnTurretRotationComplete?.Invoke();
+    }
+
+    public void RotateTurret(float rotationSpeed, Vector2 moveDirection)
+    {
+        RotateTurret(rotationSpeed, new Vector3(moveDirection.x, 0, moveDirection.y));
     }
 
     public void ClearLine()

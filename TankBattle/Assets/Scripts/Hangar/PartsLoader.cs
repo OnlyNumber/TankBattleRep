@@ -8,6 +8,7 @@ public static class PartsLoader
     private const string Turrets_Path = "Parts/Turrets";
     private const string Guns_Path = "Parts/Guns";
 
+    private static Dictionary<string, GameObject> loadedParts = new();
 
     private static T[] LoadParts<T>(string path)
     {
@@ -34,24 +35,36 @@ public static class PartsLoader
 
     public static GameObject LoadPart(string name, PartType partType)
     {
-        
-        try
-        {
-            
+        string path = "";
+
         switch (partType)
         {
             case PartType.Hull:
-                return Resources.Load<HullArmor>(Hulls_Path + "/" + name).gameObject;
+
+                path = Hulls_Path + "/" + name;
+
+                if (!loadedParts.Keys.Contains(path))
+                    loadedParts.Add(path, Resources.Load<HullArmor>(path).gameObject);
+
+                return loadedParts[path];
             case PartType.Turret:
-                return Resources.Load<TurretMovement>(Turrets_Path + "/" + name).gameObject;
+
+                path = Turrets_Path + "/" + name;
+
+                if (!loadedParts.Keys.Contains(path))
+                    loadedParts.Add(path, Resources.Load<TurretMovement>(path).gameObject);
+
+                return loadedParts[path];
             case PartType.Gun:
-                return Resources.Load<Gun>(Guns_Path + "/" + name).gameObject;
+
+                path = Guns_Path + "/" + name;
+
+                if (!loadedParts.Keys.Contains(path))
+                    loadedParts.Add(path, Resources.Load<Gun>(path).gameObject);
+
+                return loadedParts[path];
         }
-        }
-        catch
-        {
-            Debug.Log(name);
-        }
+
 
         return null;
     }

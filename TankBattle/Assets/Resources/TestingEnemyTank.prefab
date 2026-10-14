@@ -89,8 +89,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TankBehaviour
   TankMovement: {fileID: 2075296132517487046}
   HullArmor: {fileID: 4234240393103402449}
-  TankTurret: {fileID: 6912523862368318071}
-  TankCannon: {fileID: 536514210250101432}
+  TankTurrets: []
+  TankCannon: []
   MaxHealth: 10
 --- !u!1001 &6122761218341350623
 PrefabInstance:
@@ -149,17 +149,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 332c694eecca1624fbe88a8737239261, type: 3}
---- !u!114 &536514210250101432 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6019762628789681767, guid: 332c694eecca1624fbe88a8737239261, type: 3}
-  m_PrefabInstance: {fileID: 6122761218341350623}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d112aa76148458428efa6fcd51a2372, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Gun
 --- !u!4 &5487608524979207863 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1792305123814036072, guid: 332c694eecca1624fbe88a8737239261, type: 3}
@@ -352,14 +341,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3628324584807709683, guid: e4d7aa344bdb9224d9b42de310aa1f53, type: 3}
   m_PrefabInstance: {fileID: 7249814840357462194}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6912523862368318071 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4283684088398959301, guid: e4d7aa344bdb9224d9b42de310aa1f53, type: 3}
-  m_PrefabInstance: {fileID: 7249814840357462194}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a599d2d2c72bca943bc060e625db6c6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TurretMovement

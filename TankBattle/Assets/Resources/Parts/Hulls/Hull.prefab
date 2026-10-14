@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6136731131863912296}
   - component: {fileID: 1232120903682088969}
   - component: {fileID: 1513561215091121440}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 8415889581281312423}
   - component: {fileID: 1711005852868016098}
   - component: {fileID: 2980843479654145299}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LeftSide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,7 +235,7 @@ GameObject:
   - component: {fileID: 3705848486954680192}
   - component: {fileID: 2579461353245829795}
   - component: {fileID: 8479257064963295338}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HullModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -326,7 +326,7 @@ GameObject:
   - component: {fileID: 1223970438987578094}
   - component: {fileID: 6078817209474385980}
   - component: {fileID: 8798435905708453616}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RightSide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6629674925519085211}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -469,7 +469,7 @@ GameObject:
   - component: {fileID: 976530747896947729}
   - component: {fileID: 6399918218899338291}
   - component: {fileID: 7738774853609610604}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Hull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -526,6 +526,7 @@ MonoBehaviour:
     ArmorThickness: 20
     Side: 2
   _partContainer: {fileID: 7738774853609610604}
+  <AimPosition>k__BackingField: {fileID: 9006845078314058668}
 --- !u!114 &7738774853609610604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -550,7 +551,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9006845078314058668}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Turret position
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -581,7 +582,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1422045977985055081}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -619,7 +620,7 @@ GameObject:
   - component: {fileID: 27105603135921187}
   - component: {fileID: 887586762531810133}
   - component: {fileID: 4183099991713787873}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}

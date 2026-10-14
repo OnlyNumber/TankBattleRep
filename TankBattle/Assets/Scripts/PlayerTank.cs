@@ -12,8 +12,6 @@ public class PlayerTank : MonoBehaviour
         _playerInput = playerInput;
         _playerTank = playerTank;
 
-        _playerTank.TankTurret.OnTurretRotationComplete += _playerTank.TankCannon.TryShoot;
-
         _isInitialize = true;
     }
 
@@ -32,8 +30,8 @@ public class PlayerTank : MonoBehaviour
 
         if (Mathf.Abs(rightJoystickValue.y) > 0 && Mathf.Abs(rightJoystickValue.x) > 0)
             _playerTank.RotateTurret(rightJoystickValue);
-        else
-            _playerTank.TankTurret.ClearLine();
+        //else
+        //_playerTank.TankTurret.ClearLine();
         #endregion
     }
 

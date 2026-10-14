@@ -22,6 +22,37 @@ public class PartSave
         list.Add(hz);
     }
 
+    public void RemovePartFromTurrets(PartSave partSave)
+    {
+        foreach (var item in PartSlotsTurret)
+        {
+            if(item.partSave == partSave)
+            {
+                PartSlotsTurret.Remove(item);
+                break;
+            } 
+        }
+    }
+
+    public void RemovePartFromGuns(PartSave partSave)
+    {
+        foreach (var item in PartSlotsGuns)
+        {
+            if(item.partSave == partSave)
+            {
+                PartSlotsGuns.Remove(item);
+                break;
+            } 
+        }
+    }
+
+    public void RemoveAll()
+    {
+        PartSlotsTurret.Clear();
+        PartSlotsGuns.Clear();
+
+    }
+
 }
 
 [System.Serializable]
