@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class HullArmor : MonoBehaviour, ITankPart
 {
+    [SerializeField] private List<StatsModifier> _statsModifiers;
 
     public int MaxHealth;
-    public HullStats HullStats;
+    public HullStats HullStats = new();
 
     public Collider ModelColldier;
     public List<ArmorStat> armorStats = new();
@@ -14,8 +15,10 @@ public class HullArmor : MonoBehaviour, ITankPart
 
     public GameObject GameObject => gameObject;
     public PartContainer PartContainer => _partContainer;
+    private TankStatsController _tankStatsController;
 
-    [field: SerializeField] public Transform AimPosition
+    [field: SerializeField]
+    public Transform AimPosition
     {
         get;
         private set;
@@ -23,13 +26,17 @@ public class HullArmor : MonoBehaviour, ITankPart
 
     public ArmorStat GetArmorStat(Collider collider)
     {
+        ArmorStat calculatedArmourStat = new();
+
         foreach (var armorStat in armorStats)
         {
             if (armorStat.Collider == collider)
-                return armorStat;
+                calculatedArmourStat = armorStat;
         }
 
-        return new ArmorStat();
+        calculatedArmourStat.ArmorThickness = _tankStatsController.ArmorStat.CalculateFinalValue(calculatedArmourStat.ArmorThickness);
+
+        return calculatedArmourStat;
     }
 
     public List<Description> GetDescriptions()
@@ -55,6 +62,11 @@ public class HullArmor : MonoBehaviour, ITankPart
         return descriptions;
     }
 
+    public List<StatsModifier> GetStatsModifiers()
+    {
+        return _statsModifiers;
+    }
+
     private Description GetArmorDescription(ArmorSide armorSide)
     {
         foreach (var item in armorStats)
@@ -64,6 +76,12 @@ public class HullArmor : MonoBehaviour, ITankPart
         }
 
         return null;
+    }
+
+    public void SetTankStatController(TankStatsController tankStatsController)
+    {
+        _tankStatsController = tankStatsController;
+        HullStats.SetTankStatController(tankStatsController);
     }
 }
 

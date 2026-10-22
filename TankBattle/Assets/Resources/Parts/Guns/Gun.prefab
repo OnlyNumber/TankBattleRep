@@ -46,10 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d112aa76148458428efa6fcd51a2372, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gun
+  _statsModifiers: []
   _shellInfo:
-    Damage: 10
+    _damage: 1
     Penetration: 105
-    Speed: 10
+    Speed: 20
   _reloadTime: 2
   _firePoint: {fileID: 5698440368032663887}
   _projectilePrefab: {fileID: 8307831970242787, guid: fe3d39bcadf042f4587b7d3e9d01b100, type: 3}

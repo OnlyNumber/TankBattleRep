@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ITankPart
+public interface ITankPart : IModifierGiver
 {
     public PartContainer PartContainer
     {
@@ -13,4 +13,7 @@ public interface ITankPart
     }
 
     public List<Description> GetDescriptions();
+
+    public void SetTankStatController(TankStatsController tankStatsController);
+
 }

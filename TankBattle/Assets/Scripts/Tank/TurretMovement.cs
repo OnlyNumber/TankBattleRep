@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TurretMovement : MonoBehaviour, ITankPart
 {
+    [SerializeField] private List<StatsModifier> _statsModifiers;
     [SerializeField] private TrajectoryLine _trajectoryLine;
     [SerializeField] private float _lineLength;
     [SerializeField] private PartContainer _partContainer;
@@ -12,6 +13,7 @@ public class TurretMovement : MonoBehaviour, ITankPart
 
 
     public TurretStats TurretStats;
+    private TankStatsController _tankStatsController;
 
     public event Action OnTurretRotationComplete;
 
@@ -48,5 +50,15 @@ public class TurretMovement : MonoBehaviour, ITankPart
         };
 
         return descriptions;
+    }
+
+    public List<StatsModifier> GetStatsModifiers()
+    {
+        return _statsModifiers;
+    }
+    
+    public void SetTankStatController(TankStatsController tankStatsController)
+    {
+        _tankStatsController = tankStatsController;
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ModestTree;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TankBehaviour : MonoBehaviour, IPooled
@@ -10,6 +11,8 @@ public class TankBehaviour : MonoBehaviour, IPooled
     public HullArmor HullArmor;
     public List<TurretMovement> TankTurrets = new();
     public List<Gun> TankCannon = new();
+
+    private TankStatsController _tankStatsController = new();
 
     public int MaxHealth;
     public HealthSystem TankHealthSystem
@@ -27,16 +30,15 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
     private TurretGunner _turretGunner = new();
 
+    private List<TemporaryModifier> _tempModifiers = new();
+
     public void Initialize()
     {
         TankHealthSystem = new HealthSystem(MaxHealth);
         TankHealthSystem.OnHealthChanged += Death;
 
         TankMovement.Initialize(
-            HullArmor.HullStats.Acceleration,
-            HullArmor.HullStats.Decceleration,
-            HullArmor.HullStats.MaxSpeed,
-            HullArmor.HullStats.RotationSpeed);
+            HullArmor.HullStats);
 
         List<Collider> ignoreColliders = new();
 
@@ -49,6 +51,7 @@ public class TankBehaviour : MonoBehaviour, IPooled
         }
 
         _turretGunner.Initialize(TankTurrets, HullArmor.AimPosition, ignoreColliders);
+        GetModifiersFromParts();
     }
 
     public void SetUpParts(ITankPart mainHullPart)
@@ -58,6 +61,37 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
         foreach (var item in TankTurrets)
             TankCannon.AddRange(FindParts<Gun>(item.PartContainer.GunPlace));
+    }
+
+    public void AddTemporaryModifier(TemporaryModifier temporaryModifier)
+    {
+        temporaryModifier.ActivateModifier(_tankStatsController);
+    }
+
+    public bool IsContainThisModifier(TemporaryModifierData temporaryModifier)
+    {
+        return _tankStatsController.IsContainModifier(temporaryModifier);
+    }
+
+    private void GetModifiersFromParts()
+    {
+        HashSet<ITankPart> tankParts = new();
+        tankParts.Add(HullArmor);
+        tankParts.AddRange(TankTurrets.ToArray());
+        tankParts.AddRange(TankCannon);
+
+        foreach (var part in tankParts)
+        {
+            if (part == null)
+                continue;
+
+            part.SetTankStatController(_tankStatsController);
+
+            foreach (var modifier in part.GetStatsModifiers())
+            {
+                _tankStatsController.GetStat(modifier.ModifierStat).AddModifier(modifier);
+            }
+        }
     }
 
     public static List<T> FindParts<T>(List<PartContainerSlot> slots) where T : ITankPart

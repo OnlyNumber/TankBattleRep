@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour, ITankPart
 {
+    [SerializeField] private List<StatsModifier> _statsModifiers;
+
     [SerializeField] private ShellInfo _shellInfo;
     [SerializeField] private float _reloadTime;
 
@@ -17,10 +19,9 @@ public class Gun : MonoBehaviour, ITankPart
     public GameObject GameObject => gameObject;
     public PartContainer PartContainer => _partContainer;
 
-
     private bool _isReadyForShoot = true;
     private Stopwatch stopwatch = new();
-
+    private TankStatsController _tankStatsController;
 
     public void TryShoot()
     {
@@ -37,8 +38,6 @@ public class Gun : MonoBehaviour, ITankPart
         projectile.OnHit += ReactionCollision;
 
         UniTask task = Reload(this.GetCancellationTokenOnDestroy());
-
-        //task.exis
     }
 
     private void ReactionCollision(Projectile projectile, RaycastHit hit, Vector3 direction)
@@ -55,8 +54,10 @@ public class Gun : MonoBehaviour, ITankPart
 
     public async UniTask Reload(CancellationToken ct)
     {
+        UnityEngine.Debug.Log("Reload time " + _tankStatsController.ReloadStat.CalculateFinalValue(_reloadTime));
+
         stopwatch.Restart();
-        await UniTask.Delay(TimeSpan.FromSeconds(_reloadTime), cancellationToken: ct);
+        await UniTask.Delay(TimeSpan.FromSeconds(_tankStatsController.ReloadStat.CalculateFinalValue(_reloadTime)), cancellationToken: ct);
 
         _isReadyForShoot = true;
         stopwatch.Stop();
@@ -73,5 +74,16 @@ public class Gun : MonoBehaviour, ITankPart
         };
 
         return descriptions;
+    }
+
+    public List<StatsModifier> GetStatsModifiers()
+    {
+        return _statsModifiers;
+    }
+
+    public void SetTankStatController(TankStatsController tankStatsController)
+    {
+        _tankStatsController = tankStatsController;
+        _shellInfo.SetTankStatController(_tankStatsController);
     }
 }

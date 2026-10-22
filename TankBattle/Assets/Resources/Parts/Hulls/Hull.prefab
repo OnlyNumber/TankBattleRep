@@ -506,12 +506,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed97fe2befb362e4f8d3ad998d97c467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HullArmor
+  _statsModifiers: []
   MaxHealth: 100
   HullStats:
-    Acceleration: 3
-    Decceleration: 12
+    _acceleration: 5
+    _decceleration: 12
     RotationSpeed: 60
-    MaxSpeed: 10
+    _maxSpeed: 8
+  ModelColldier: {fileID: 0}
   armorStats:
   - Collider: {fileID: 4183099991713787873}
     ArmorThickness: 100
