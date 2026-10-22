@@ -50,6 +50,13 @@ public class Gun : MonoBehaviour, ITankPart
         projectile.ReturnToPool();
     }
 
+    private float _currentReloadTime;
+
+    void Update()
+    {
+        _currentReloadTime = GetCurretTime();
+    }
+
     public float GetCurretTime()
     {
         return (float)stopwatch.Elapsed.TotalSeconds / _reloadTime;
@@ -57,8 +64,6 @@ public class Gun : MonoBehaviour, ITankPart
 
     public async UniTask Reload(CancellationToken ct)
     {
-        UnityEngine.Debug.Log("Reload time " + _tankStatsController.ReloadStat.CalculateFinalValue(_reloadTime));
-
         stopwatch.Restart();
         await UniTask.Delay(TimeSpan.FromSeconds(_tankStatsController.ReloadStat.CalculateFinalValue(_reloadTime)), cancellationToken: ct);
 

@@ -26,7 +26,7 @@ public class EnemySpawner
 
     private TankBehaviour _targetTank;
     private int currentWave;
-    public int currentDeadEnemies
+    public int CurrentDeadEnemies
     {
         get;
         private set;
@@ -81,10 +81,10 @@ public class EnemySpawner
     {
         OnDeathSpawnedUnit?.Invoke(tankBehaviour);
 
-        currentDeadEnemies++;
-        if (currentDeadEnemies >= EnemiesPerWave)
+        CurrentDeadEnemies++;
+        if (CurrentDeadEnemies >= EnemiesPerWave)
         {
-            currentDeadEnemies = 0;
+            CurrentDeadEnemies = 0;
             ActivateWaves();
         }
 

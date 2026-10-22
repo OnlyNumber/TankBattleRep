@@ -1,7 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Zenject.SpaceFighter;
 
 public class GameManager : MonoBehaviour
 {
@@ -28,10 +27,9 @@ public class GameManager : MonoBehaviour
     {
         var playerTank = CreatePlayer();
 
-
         playerTank.Initialize();
         _playerTankControlling.Initialize(playerTank, _playerInput);
-        _playerUI.Initialize(playerTank.TankHealthSystem);
+        _playerUI.Initialize(playerTank, _enemySpawner);
 
         foreach (var turret in playerTank.TankTurrets)
         {
@@ -54,10 +52,7 @@ public class GameManager : MonoBehaviour
         _enemySpawner.OnEndWaves += () => _rewardGiver.RewardMessage(playerTank.transform.position, 200);
         _enemySpawner.OnEndWaves += _completeWaveWindow.Show;
 
-        _enemySpawner.ActivateWaves();
-
-
-
+        //_enemySpawner.ActivateWaves();
     }
 
     private async UniTaskVoid Delay()

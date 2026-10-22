@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7af47f73a444d644aa41e65b32dc2051, type: 3}
   m_Name: GunCrit
   m_EditorClassIdentifier: Assembly-CSharp::TemporaryModifierData
+  <Icon>k__BackingField: {fileID: -8176899152106320208, guid: fed30bd32d2a2ef4fb45d68579c027cb, type: 3}
   <Duration>k__BackingField: 60
   StatsModifier:
   - Value: 0.5

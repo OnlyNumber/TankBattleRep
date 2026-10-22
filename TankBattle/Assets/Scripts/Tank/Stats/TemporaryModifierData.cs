@@ -5,6 +5,13 @@ using UnityEngine;
 public class TemporaryModifierData : ScriptableObject
 {
     [field: SerializeField]
+    public Sprite Icon
+    {
+        get;
+        private set;
+    }
+
+    [field: SerializeField]
     public float Duration
     {
         get;

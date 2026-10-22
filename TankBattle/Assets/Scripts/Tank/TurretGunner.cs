@@ -26,6 +26,7 @@ public class TurretGunner
     public void RotationInput(Vector3 inputDirection)
     {
         Vector3 hittedPosition = Vector3.zero;
+        
         /*
         var hits = Physics.RaycastAll(_aimPosition.position, inputDirection.normalized, _defaultDistance);
         foreach (var item in hits)

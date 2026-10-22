@@ -33,11 +33,11 @@ public static class UtilitiesMath
         {
             tankBehaviour.TankHealthSystem.CurrentHealth -= damage;
 
-            Debug.Log("Last health " + tankBehaviour.TankHealthSystem.CurrentHealth + "Penetrated " + effectiveArmor + "Shell " + shellInfo.Penetration);
+            //Debug.Log("Last health " + tankBehaviour.TankHealthSystem.CurrentHealth + "Penetrated " + effectiveArmor + "Shell " + shellInfo.Penetration);
         }
         else
         {
-            Debug.Log($"Not penetrated" + "Shell " + shellInfo.Penetration + " effective armor: " + effectiveArmor);
+            //Debug.Log($"Not penetrated" + "Shell " + shellInfo.Penetration + " effective armor: " + effectiveArmor);
         }
     }
 
@@ -70,9 +70,12 @@ public static class UtilitiesMath
 
         foreach (var item in TemporaryModifierDatas)
         {
-            if(!tankBehaviour.IsContainThisModifier(item))
-            datas.Add(item);
+            if (!tankBehaviour.IsContainThisModifier(item))
+                datas.Add(item);
         }
+
+        if (datas.Count == 0)
+            return;
 
         var temporaryModifier = datas[Random.Range(0, datas.Count)].GetModifier();
 

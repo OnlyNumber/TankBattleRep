@@ -30,7 +30,7 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
     private TurretGunner _turretGunner = new();
 
-    private List<TemporaryModifier> _tempModifiers = new();
+    public Action<TemporaryModifier> OnAddingTemporaryModifier;
 
     public void Initialize()
     {
@@ -65,6 +65,7 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
     public void AddTemporaryModifier(TemporaryModifier temporaryModifier)
     {
+        OnAddingTemporaryModifier?.Invoke(temporaryModifier);
         temporaryModifier.ActivateModifier(_tankStatsController);
     }
 

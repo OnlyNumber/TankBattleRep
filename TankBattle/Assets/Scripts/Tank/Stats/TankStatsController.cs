@@ -15,7 +15,7 @@ public class TankStatsController
     {
         foreach (var item in TempModifiers)
         {
-            if (checkModifier == item.GetData())
+            if (checkModifier == item.ModifierData)
                 return true;
         }
 

@@ -6,13 +6,20 @@ using UnityEngine;
 
 public class TemporaryModifier
 {
-    private TemporaryModifierData _modifierData;
+    public TemporaryModifierData ModifierData
+    {
+        get;
+        private set;
+    }
+
     private TankStatsController _tankStatsController;
     private CancellationTokenSource _cts;
 
+    public Action<TemporaryModifier> OnEffectEnd;
+
     public TemporaryModifier(TemporaryModifierData modifierData)
     {
-        _modifierData = modifierData;
+        ModifierData = modifierData;
     }
 
     public void ActivateModifier(TankStatsController tankStatsController)
@@ -28,19 +35,15 @@ public class TemporaryModifier
 
     private async UniTaskVoid DurationAsync(CancellationToken ct)
     {
-        foreach (var item in _modifierData.StatsModifier)
+        foreach (var item in ModifierData.StatsModifier)
             _tankStatsController.GetStat(item.ModifierStat).AddModifier(item);
 
-        await UniTask.Delay(TimeSpan.FromSeconds(_modifierData.Duration), cancellationToken: ct);
+        await UniTask.Delay(TimeSpan.FromSeconds(ModifierData.Duration), cancellationToken: ct);
 
-        foreach (var item in _modifierData.StatsModifier)
+        foreach (var item in ModifierData.StatsModifier)
             _tankStatsController.GetStat(item.ModifierStat).RemoveModifier(item);
 
-    }
+        OnEffectEnd?.Invoke(this);
 
-    public TemporaryModifierData GetData()
-    {
-        return _modifierData;
     }
-
 }

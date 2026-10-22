@@ -27,6 +27,8 @@ public class TurretMovement : MonoBehaviour, ITankPart
 
     private void RotateTurret(float rotationSpeed, Vector3 rotateDirection)
     {
+
+
         _trajectoryLine.SetPositions(transform.position, transform.position + rotateDirection.normalized * _lineLength);
 
         Vector3 forwardRef = transform.parent.forward;
@@ -42,16 +44,35 @@ public class TurretMovement : MonoBehaviour, ITankPart
         float clampedTargetAngle = Mathf.Clamp(targetAngle, -_turretStats.MaxRotationAngle / 2, _turretStats.MaxRotationAngle / 2);
 
         currentClampedAngle = Mathf.MoveTowardsAngle(
-            currentClampedAngle, 
-            clampedTargetAngle, 
+            currentClampedAngle,
+            clampedTargetAngle,
             _turretStats.RotationSpeed * Time.deltaTime
         );
 
         transform.rotation = Quaternion.LookRotation(forwardRef) * Quaternion.Euler(0f, currentClampedAngle, 0f);
 
-        if (Mathf.Abs(transform.rotation.eulerAngles.y - currentClampedAngle) < 3)
+
+        float angle360;
+
+        if (targetAngle < 0)
+            angle360 = 360 + targetAngle;
+        else
+            angle360 = targetAngle;
+
+        if (checkRotation)
+            Debug.Log("Rotating turret " + transform.rotation.eulerAngles.y + " " + angle360);
+
+        if (Mathf.Abs(transform.rotation.eulerAngles.y - angle360) < 3)
+        {
+            if (checkRotationLog)
+                Debug.Log("OnTurretRotationComplete");
             OnTurretRotationComplete?.Invoke();
+        }
     }
+
+    public bool checkRotationLog;
+    public bool checkRotation;
+
 
     public void ClearLine()
     {
