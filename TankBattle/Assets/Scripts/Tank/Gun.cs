@@ -16,6 +16,9 @@ public class Gun : MonoBehaviour, ITankPart
     [SerializeField] private Projectile _projectilePrefab;
     [SerializeField] private PartContainer _partContainer;
 
+    [SerializeField] private bool _isBuiltIn;
+    public bool IsBuiltIn => _isBuiltIn;
+
     public GameObject GameObject => gameObject;
     public PartContainer PartContainer => _partContainer;
 

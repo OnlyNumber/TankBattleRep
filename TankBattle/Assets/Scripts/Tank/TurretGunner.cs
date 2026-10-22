@@ -49,7 +49,7 @@ public class TurretGunner
             Vector3 turretDirection = hittedPosition - turret.transform.position;
             turretDirection.Normalize();
 
-            turret.RotateTurret(turret.TurretStats.TurretRotationSpeed, turretDirection);
+            turret.RotateTurret(turretDirection);
         }
     }
 }

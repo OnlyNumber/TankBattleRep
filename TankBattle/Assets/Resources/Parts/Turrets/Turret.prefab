@@ -80,11 +80,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a599d2d2c72bca943bc060e625db6c6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurretMovement
+  _statsModifiers: []
   _trajectoryLine: {fileID: 8399025005303784866}
   _lineLength: 5
   _partContainer: {fileID: 3595594085334223878}
+  _isBuiltIn: 0
   TurretStats:
-    TurretRotationSpeed: 90
+    RotationSpeed: 90
+    MaxRotationAngle: 360
 --- !u!120 &7580836192090409554
 LineRenderer:
   serializedVersion: 3
@@ -93,7 +96,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2618366525269818366}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

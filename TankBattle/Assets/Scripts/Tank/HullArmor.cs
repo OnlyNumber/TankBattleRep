@@ -24,6 +24,9 @@ public class HullArmor : MonoBehaviour, ITankPart
         private set;
     }
 
+    [SerializeField] private bool _isBuiltIn;
+    public bool IsBuiltIn => _isBuiltIn;
+
     public ArmorStat GetArmorStat(Collider collider)
     {
         ArmorStat calculatedArmourStat = new();

@@ -8,7 +8,14 @@ public class ShellInfo
     [SerializeField] private int _damage;
     public int Damage
     {
-        get => (int)_tankStatsController.DamageStat.CalculateFinalValue((float)_damage);
+        get
+        {
+            if (_tankStatsController == null)
+                return _damage;
+
+            return (int)_tankStatsController.DamageStat.CalculateFinalValue((float)_damage);
+
+        }
     }
     public float Penetration;
     public float Speed;

@@ -11,30 +11,46 @@ public class TurretMovement : MonoBehaviour, ITankPart
     public GameObject GameObject => gameObject;
     public PartContainer PartContainer => _partContainer;
 
+    [SerializeField] private bool _isBuiltIn;
+    public bool IsBuiltIn => _isBuiltIn;
 
-    public TurretStats TurretStats;
+    [SerializeField] private TurretStats _turretStats;
     private TankStatsController _tankStatsController;
 
     public event Action OnTurretRotationComplete;
+    private float currentClampedAngle = 0f;
 
-    public void RotateTurret(float rotationSpeed, Vector3 moveDirection)
+    public void RotateTurret(Vector3 rotateDirection)
     {
-        _trajectoryLine.SetPositions(transform.position, transform.position + moveDirection.normalized * _lineLength);
-
-        Quaternion targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
-
-        transform.rotation = Quaternion.RotateTowards(
-                transform.rotation,
-                targetRotation,
-                rotationSpeed * Time.deltaTime);
-
-        if (Mathf.Abs(transform.rotation.eulerAngles.y - targetRotation.eulerAngles.y) < 3)
-            OnTurretRotationComplete?.Invoke();
+        RotateTurret(_turretStats.RotationSpeed, rotateDirection);
     }
 
-    public void RotateTurret(float rotationSpeed, Vector2 moveDirection)
+    private void RotateTurret(float rotationSpeed, Vector3 rotateDirection)
     {
-        RotateTurret(rotationSpeed, new Vector3(moveDirection.x, 0, moveDirection.y));
+        _trajectoryLine.SetPositions(transform.position, transform.position + rotateDirection.normalized * _lineLength);
+
+        Vector3 forwardRef = transform.parent.forward;
+        forwardRef.y = 0f;
+        forwardRef.Normalize();
+
+        Vector3 targetDir = rotateDirection;
+        targetDir.y = 0f;
+        targetDir.Normalize();
+
+        float targetAngle = Vector3.SignedAngle(forwardRef, targetDir, Vector3.up);
+
+        float clampedTargetAngle = Mathf.Clamp(targetAngle, -_turretStats.MaxRotationAngle / 2, _turretStats.MaxRotationAngle / 2);
+
+        currentClampedAngle = Mathf.MoveTowardsAngle(
+            currentClampedAngle, 
+            clampedTargetAngle, 
+            _turretStats.RotationSpeed * Time.deltaTime
+        );
+
+        transform.rotation = Quaternion.LookRotation(forwardRef) * Quaternion.Euler(0f, currentClampedAngle, 0f);
+
+        if (Mathf.Abs(transform.rotation.eulerAngles.y - currentClampedAngle) < 3)
+            OnTurretRotationComplete?.Invoke();
     }
 
     public void ClearLine()
@@ -46,7 +62,8 @@ public class TurretMovement : MonoBehaviour, ITankPart
     {
         List<Description> descriptions = new()
         {
-            new Description("Rotation speed", TurretStats.TurretRotationSpeed.ToString())
+            new Description("Rotation speed", _turretStats.RotationSpeed.ToString()),
+            new Description("Max rotate angle", _turretStats.MaxRotationAngle.ToString())
         };
 
         return descriptions;
@@ -56,7 +73,7 @@ public class TurretMovement : MonoBehaviour, ITankPart
     {
         return _statsModifiers;
     }
-    
+
     public void SetTankStatController(TankStatsController tankStatsController)
     {
         _tankStatsController = tankStatsController;

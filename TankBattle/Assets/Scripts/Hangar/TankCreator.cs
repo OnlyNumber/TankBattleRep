@@ -109,6 +109,9 @@ public class TankCreator : MonoBehaviour
 
     private void SellOrDisconect()
     {
+        if (_currentPart.IsBuiltIn)
+            return;
+
         if (GetPartsList(_currentHull).Contains(_currentPart))
         {
             //Disconnect\\
@@ -249,6 +252,18 @@ public class TankCreator : MonoBehaviour
 
         _createdParts.Add(_currentPart, _currentPartSave);
 
+        if (tankPart.PartContainer != null)
+        {
+            foreach (var slot in tankPart.PartContainer.TurretPlace)
+                if (slot.Part != null)
+                    _createdParts.Add(slot.Part, ConversionFromPart(slot.Part));
+
+            foreach (var slot in tankPart.PartContainer.GunPlace)
+                if (slot.Part != null)
+                    _createdParts.Add(slot.Part, ConversionFromPart(slot.Part));
+        }
+
+
         if (tankPart is HullArmor)
         {
             if (_currentHull != null)
@@ -271,6 +286,31 @@ public class TankCreator : MonoBehaviour
     {
         var part = Instantiate(tankPartPrefab.GameObject).GetComponent<ITankPart>();
         part.GameObject.name = tankPartPrefab.GameObject.name;
+
+        if (part.PartContainer != null)
+        {
+            foreach (var slot in part.PartContainer.TurretPlace)
+            {
+                if (slot.Parent.childCount <= 0)
+                    continue;
+
+                var child = slot.Parent.GetChild(0);
+
+                if (child != null)
+                    slot.Part = child.gameObject.GetComponent<ITankPart>();
+            }
+
+            foreach (var slot in part.PartContainer.GunPlace)
+            {
+                if (slot.Parent.childCount <= 0)
+                    continue;
+
+                var child = slot.Parent.GetChild(0);
+
+                if (child != null)
+                    slot.Part = child.gameObject.GetComponent<ITankPart>();
+            }
+        }
         return part;
     }
 

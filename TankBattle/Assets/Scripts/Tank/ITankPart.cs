@@ -3,6 +3,11 @@ using UnityEngine;
 
 public interface ITankPart : IModifierGiver
 {
+    public bool IsBuiltIn
+    {
+        get;
+    }
+
     public PartContainer PartContainer
     {
         get;
