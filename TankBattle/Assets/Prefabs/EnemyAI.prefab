@@ -48,4 +48,4 @@ MonoBehaviour:
   TargetTank: {fileID: 0}
   enemySettings:
     StopMovingRange: 10
-    ShootRange: 20
+    ShootRange: 15

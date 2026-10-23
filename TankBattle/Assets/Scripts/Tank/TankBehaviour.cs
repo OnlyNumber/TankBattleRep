@@ -42,13 +42,15 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
         List<Collider> ignoreColliders = new();
 
-        if (HullArmor.ModelColldier != null)
-            ignoreColliders.Add(HullArmor.ModelColldier);
-
         foreach (var item in HullArmor.armorStats)
         {
             ignoreColliders.Add(item.Collider);
         }
+
+        var parts = TankCreator.GetPartsList(HullArmor);
+
+        foreach (var item in parts)
+            item.PartCollider.enabled = false;
 
         _turretGunner.Initialize(TankTurrets, HullArmor.AimPosition, ignoreColliders);
         GetModifiersFromParts();
@@ -61,6 +63,19 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
         foreach (var item in TankTurrets)
             TankCannon.AddRange(FindParts<Gun>(item.PartContainer.GunPlace));
+
+        List<Collider> tankColliders = new();
+
+        foreach (var item in HullArmor.armorStats)
+        {
+            tankColliders.Add(item.Collider);
+        }
+
+        foreach (var cannon in TankCannon)
+        {
+            if (cannon != null)
+                cannon.Initialize(tankColliders);
+        }
     }
 
     public void AddTemporaryModifier(TemporaryModifier temporaryModifier)

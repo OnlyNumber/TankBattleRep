@@ -11,10 +11,10 @@ public class GunReloadIndicator : MonoBehaviour
         _gun = gun;
     }
 
-    void Update()
+    private void Update()
     {
         _circleSlider.value = _gun.GetCurretTime();
 
-        _circleSlider.gameObject.SetActive(_gun.GetCurretTime() < 1);
+        _circleSlider.gameObject.SetActive(_gun.GetCurretTime() < 0.98f);
     }
 }

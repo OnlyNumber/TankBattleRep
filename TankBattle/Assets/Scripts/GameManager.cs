@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,10 +13,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerUI _playerUI;
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private PlayerTank _playerTankControlling;
+    [SerializeField] private CinemachineCamera _camera;
 
     [SerializeField] private TankBehaviour _baseTankBehaviour;
     [SerializeField] private GunReloadIndicator _gunReloadIndicatorPrefab;
 
+    public bool SpawnWaves = true;
 
 
     void Start()
@@ -35,24 +38,25 @@ public class GameManager : MonoBehaviour
         {
             foreach (var cannon in TankBehaviour.FindParts<Gun>(turret.PartContainer.GunPlace))
             {
+                var reloadIndicator = Instantiate(_gunReloadIndicatorPrefab);
+                reloadIndicator.Initialize(cannon);
+                reloadIndicator.transform.SetParent(cannon.transform);
+                reloadIndicator.transform.localPosition = new Vector3(0, 0.5f, 0);
+
                 turret.OnTurretRotationComplete += cannon.TryShoot;
             }
         }
 
+        _camera.Follow = playerTank.transform;
 
-        /*
-                var reloadIndicator = Instantiate(_gunReloadIndicatorPrefab);
-                reloadIndicator.Initialize(playerTank.TankCannon);
-                reloadIndicator.transform.SetParent(playerTank.TankCannon.transform);
-                reloadIndicator.transform.localPosition = new Vector3(0, 0.5f, 0);
-        */
 
         _enemySpawner.Initialize(playerTank);
         _enemySpawner.OnDeathSpawnedUnit += _rewardGiver.GetRewardForEnemy;
         _enemySpawner.OnEndWaves += () => _rewardGiver.RewardMessage(playerTank.transform.position, 200);
         _enemySpawner.OnEndWaves += _completeWaveWindow.Show;
 
-        //_enemySpawner.ActivateWaves();
+        if (SpawnWaves)
+            _enemySpawner.ActivateWaves();
     }
 
     private async UniTaskVoid Delay()

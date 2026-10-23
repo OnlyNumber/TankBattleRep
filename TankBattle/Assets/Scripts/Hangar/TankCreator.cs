@@ -388,7 +388,7 @@ public class TankCreator : MonoBehaviour
         }
     }
 
-    private static List<ITankPart> GetPartsList(ITankPart FirstPart)
+    public static List<ITankPart> GetPartsList(ITankPart FirstPart)
     {
         List<ITankPart> allParts = new();
 
@@ -542,36 +542,41 @@ public class TankCreator : MonoBehaviour
             if (currentQueuePart.PartContainer == null)
                 continue;
 
-            var containerSlots = currentPartSave.PartSlotsTurret;
+            AddParts(currentPartSave.PartSlotsTurret, currentQueuePart.PartContainer.TurretPlace);
+            AddParts(currentPartSave.PartSlotsGuns, currentQueuePart.PartContainer.GunPlace);
 
-            foreach (var item in containerSlots)
+        }
+
+        return firstPart;
+
+        void AddParts(List<PartSaveSlotInfo> partSlots, List<PartContainerSlot> currentPartSlots)
+        {
+            foreach (var item in partSlots)
             {
                 partQueue.Enqueue(item.partSave);
-                var tankPart = CreatePart(PartsLoader.LoadPart(item.partSave.PartName, item.partSave.PartType).GetComponent<ITankPart>());
+                ITankPart tankPart = null;
 
-                currentQueuePart.PartContainer.TurretPlace[item.partIndex].Part = tankPart;
-                tankPart.GameObject.transform.SetParent(currentQueuePart.PartContainer.TurretPlace[item.partIndex].Parent);
-                tankPart.GameObject.transform.localPosition = Vector3.zero;
+                if (currentPartSlots[item.partIndex].Parent.childCount == 0)
+                {
+                    tankPart = CreatePart(PartsLoader.LoadPart(item.partSave.PartName, item.partSave.PartType).GetComponent<ITankPart>());
+                }
+                else
+                {
+                    tankPart = currentPartSlots[item.partIndex].Parent.GetChild(0).GetComponent<ITankPart>();
+                }
 
-                convertedParts.Add(item.partSave, tankPart);
-            }
 
-            containerSlots = currentPartSave.PartSlotsGuns;
 
-            foreach (var item in containerSlots)
-            {
-                partQueue.Enqueue(item.partSave);
-                var tankPart = CreatePart(PartsLoader.LoadPart(item.partSave.PartName, item.partSave.PartType).GetComponent<ITankPart>());
-
-                currentQueuePart.PartContainer.GunPlace[item.partIndex].Part = tankPart;
-                tankPart.GameObject.transform.SetParent(currentQueuePart.PartContainer.GunPlace[item.partIndex].Parent);
+                currentPartSlots[item.partIndex].Part = tankPart;
+                tankPart.GameObject.transform.SetParent(currentPartSlots[item.partIndex].Parent);
                 tankPart.GameObject.transform.localPosition = Vector3.zero;
 
                 convertedParts.Add(item.partSave, tankPart);
             }
         }
-        return firstPart;
     }
+
+
 
     public static ITankPart PartSaveToTankParts(PartSave loadingPart, out Dictionary<PartSave, ITankPart> createdParts)
     {

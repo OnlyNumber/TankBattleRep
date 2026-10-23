@@ -17,6 +17,12 @@ public interface ITankPart : IModifierGiver
         get;
     }
 
+    
+    public Collider PartCollider
+    {
+        get;
+    }
+
     public List<Description> GetDescriptions();
 
     public void SetTankStatController(TankStatsController tankStatsController);

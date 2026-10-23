@@ -4,22 +4,27 @@ using UnityEngine;
 
 public class TurretMovement : MonoBehaviour, ITankPart
 {
-    [SerializeField] private List<StatsModifier> _statsModifiers;
-    [SerializeField] private TrajectoryLine _trajectoryLine;
-    [SerializeField] private float _lineLength;
+    #region ITankPart implementation
     [SerializeField] private PartContainer _partContainer;
+    [SerializeField] private Collider _partCollider;
+    public Collider PartCollider => _partCollider;
     public GameObject GameObject => gameObject;
     public PartContainer PartContainer => _partContainer;
 
     [SerializeField] private bool _isBuiltIn;
     public bool IsBuiltIn => _isBuiltIn;
-
+    #endregion
+ 
+    [SerializeField] private List<StatsModifier> _statsModifiers;
+    [SerializeField] private TrajectoryLine _trajectoryLine;
+    [SerializeField] private float _lineLength;
     [SerializeField] private TurretStats _turretStats;
-    private TankStatsController _tankStatsController;
 
-    public event Action OnTurretRotationComplete;
+    private TankStatsController _tankStatsController;
     private float currentClampedAngle = 0f;
 
+    public event Action OnTurretRotationComplete;
+    
     public void RotateTurret(Vector3 rotateDirection)
     {
         RotateTurret(_turretStats.RotationSpeed, rotateDirection);
@@ -27,8 +32,6 @@ public class TurretMovement : MonoBehaviour, ITankPart
 
     private void RotateTurret(float rotationSpeed, Vector3 rotateDirection)
     {
-
-
         _trajectoryLine.SetPositions(transform.position, transform.position + rotateDirection.normalized * _lineLength);
 
         Vector3 forwardRef = transform.parent.forward;
@@ -46,33 +49,19 @@ public class TurretMovement : MonoBehaviour, ITankPart
         currentClampedAngle = Mathf.MoveTowardsAngle(
             currentClampedAngle,
             clampedTargetAngle,
-            _turretStats.RotationSpeed * Time.deltaTime
+            rotationSpeed * Time.deltaTime
         );
 
         transform.rotation = Quaternion.LookRotation(forwardRef) * Quaternion.Euler(0f, currentClampedAngle, 0f);
 
+        float angle = Mathf.Atan2(rotateDirection.x, rotateDirection.z) * Mathf.Rad2Deg;
 
-        float angle360;
+        if (angle < 0)
+            angle += 360;
 
-        if (targetAngle < 0)
-            angle360 = 360 + targetAngle;
-        else
-            angle360 = targetAngle;
-
-        if (checkRotation)
-            Debug.Log("Rotating turret " + transform.rotation.eulerAngles.y + " " + angle360);
-
-        if (Mathf.Abs(transform.rotation.eulerAngles.y - angle360) < 3)
-        {
-            if (checkRotationLog)
-                Debug.Log("OnTurretRotationComplete");
+        if (Mathf.Abs(transform.rotation.eulerAngles.y - angle) < 3)
             OnTurretRotationComplete?.Invoke();
-        }
     }
-
-    public bool checkRotationLog;
-    public bool checkRotation;
-
 
     public void ClearLine()
     {

@@ -31,10 +31,7 @@ public class PlayerUI : MonoBehaviour
         _enemySpawner.OnDeathSpawnedUnit += EnemiesTextUpdate;
         _enemiesCountText.text = (_enemySpawner.CurrentDeadEnemies - _enemySpawner.EnemiesPerWave).ToString() + " / " + _enemySpawner.EnemiesPerWave.ToString();
 
-
-
         playerTank.OnAddingTemporaryModifier += AddIcon;
-
     }
 
     private void AddIcon(TemporaryModifier modifier)
@@ -55,7 +52,6 @@ public class PlayerUI : MonoBehaviour
         _iconsList.Remove(modifier);
 
         Destroy(icon);
-
     }
 
     private void EnemiesTextUpdate(TankBehaviour tankBehaviour)

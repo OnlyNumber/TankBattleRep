@@ -52,7 +52,6 @@ public class EnemySpawner
         currentWave++;
 
         SpawnWave();
-
     }
 
     public void SpawnWave()
@@ -71,7 +70,7 @@ public class EnemySpawner
             tankAI.Initialize(tank, _targetTank);
             tankAI.ActivateAI();
 
-            tankHealthBar.Initialize(tank.transform, tank.TankHealthSystem);
+            tankHealthBar.Initialize(tank.transform, tank);
 
             tank.OnDeath += DeathOfEnemy;
         }

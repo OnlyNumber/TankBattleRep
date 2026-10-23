@@ -235,6 +235,7 @@ GameObject:
   - component: {fileID: 3705848486954680192}
   - component: {fileID: 2579461353245829795}
   - component: {fileID: 8479257064963295338}
+  - component: {fileID: 2306395792005133636}
   m_Layer: 8
   m_Name: HullModel
   m_TagString: Untagged
@@ -255,7 +256,7 @@ Transform:
   m_LocalScale: {x: 2.5, y: 1, z: 4.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6629674925519085211}
+  m_Father: {fileID: 976530747896947729}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2579461353245829795
 MeshFilter:
@@ -314,6 +315,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2306395792005133636
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3553987616677035930}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1.0000001}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4085366768139761503
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,38 +448,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &4203554507969991849
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6629674925519085211}
-  m_Layer: 8
-  m_Name: Model
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6629674925519085211
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4203554507969991849}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3705848486954680192}
-  m_Father: {fileID: 976530747896947729}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6566188354731450865
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,7 +479,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6629674925519085211}
+  - {fileID: 3705848486954680192}
   - {fileID: 9006845078314058668}
   - {fileID: 1422045977985055081}
   m_Father: {fileID: 0}
@@ -506,14 +496,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed97fe2befb362e4f8d3ad998d97c467, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HullArmor
-  _statsModifiers: []
   MaxHealth: 100
   HullStats:
     _acceleration: 5
     _decceleration: 12
     RotationSpeed: 60
     _maxSpeed: 8
-  ModelColldier: {fileID: 0}
   armorStats:
   - Collider: {fileID: 4183099991713787873}
     ArmorThickness: 100
@@ -527,8 +515,11 @@ MonoBehaviour:
   - Collider: {fileID: 1513561215091121440}
     ArmorThickness: 20
     Side: 2
-  _partContainer: {fileID: 7738774853609610604}
   <AimPosition>k__BackingField: {fileID: 9006845078314058668}
+  _partContainer: {fileID: 7738774853609610604}
+  _partCollider: {fileID: 2306395792005133636}
+  _isBuiltIn: 0
+  _statsModifiers: []
 --- !u!114 &7738774853609610604
 MonoBehaviour:
   m_ObjectHideFlags: 0

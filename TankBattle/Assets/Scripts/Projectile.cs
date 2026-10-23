@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -19,6 +20,9 @@ public class Projectile : MonoBehaviour, IPooled
 
     private CancellationTokenSource _cts;
 
+    [SerializeField] private float _rayDistance = 1;
+    private List<Collider> _tankColliders = new();
+
     public void InitializePool(GameObjectPool gameObjectPool)
     {
         _gameObjectPool = gameObjectPool;
@@ -28,8 +32,13 @@ public class Projectile : MonoBehaviour, IPooled
     {
         transform.position += transform.forward * _speed * Time.deltaTime;
 
-        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, 1))
+        if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, _rayDistance))
         {
+            foreach (var collider in _tankColliders)
+            {
+                if (hitInfo.collider == collider)
+                    return;
+            }
             OnHit?.Invoke(this, hitInfo, transform.forward);
         }
     }
@@ -41,8 +50,9 @@ public class Projectile : MonoBehaviour, IPooled
         ReturnToPool();
     }
 
-    public void Initialize(float speed)
+    public void Initialize(float speed, List<Collider> tankColliders)
     {
+        _tankColliders.AddRange(tankColliders);
         _speed = speed;
 
         _cts?.Cancel();
@@ -60,6 +70,8 @@ public class Projectile : MonoBehaviour, IPooled
 
     public virtual void ReturnToPool()
     {
+        _tankColliders.Clear();
+
         _speed = 0;
         OnHit = null;
 

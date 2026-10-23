@@ -4,18 +4,11 @@ using UnityEngine;
 
 public class HullArmor : MonoBehaviour, ITankPart
 {
-    [SerializeField] private List<StatsModifier> _statsModifiers;
 
     public int MaxHealth;
     public HullStats HullStats = new();
-
-    public Collider ModelColldier;
+    
     public List<ArmorStat> armorStats = new();
-    [SerializeField] private PartContainer _partContainer;
-
-    public GameObject GameObject => gameObject;
-    public PartContainer PartContainer => _partContainer;
-    private TankStatsController _tankStatsController;
 
     [field: SerializeField]
     public Transform AimPosition
@@ -24,8 +17,23 @@ public class HullArmor : MonoBehaviour, ITankPart
         private set;
     }
 
+
+    #region  ITankPart implementation
+    [SerializeField] private PartContainer _partContainer;
+    [SerializeField] private Collider _partCollider;
+
+    public Collider PartCollider => _partCollider;
+    public GameObject GameObject => gameObject;
+    public PartContainer PartContainer => _partContainer;
+
     [SerializeField] private bool _isBuiltIn;
     public bool IsBuiltIn => _isBuiltIn;
+    #endregion
+    
+    [SerializeField] private List<StatsModifier> _statsModifiers;
+
+    private TankStatsController _tankStatsController;
+
 
     public ArmorStat GetArmorStat(Collider collider)
     {
@@ -55,11 +63,6 @@ public class HullArmor : MonoBehaviour, ITankPart
             GetArmorDescription(ArmorSide.Front),
             GetArmorDescription(ArmorSide.Side),
             GetArmorDescription(ArmorSide.Rear),
-/*
-            new Description("Front armor", HullStats.Decceleration.ToString()),
-            new Description("Side armor", HullStats.MaxSpeed.ToString()),
-            new Description("Rear armor", HullStats.RotationSpeed.ToString()),
-*/
         };
 
         return descriptions;

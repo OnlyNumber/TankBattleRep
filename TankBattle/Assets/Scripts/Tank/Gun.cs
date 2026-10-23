@@ -7,24 +7,47 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour, ITankPart
 {
+    private const float Spawn_Hight = 0.5f;
+
     [SerializeField] private List<StatsModifier> _statsModifiers;
 
     [SerializeField] private ShellInfo _shellInfo;
-    [SerializeField] private float _reloadTime;
+    [SerializeField] private float _baseReloadTime = 1;
+
+    public float ReloadTime
+    {
+        get
+        {
+            return _tankStatsController.ReloadStat.CalculateFinalValue(_baseReloadTime);
+        }
+    }
+
 
     [SerializeField] private Transform _firePoint;
     [SerializeField] private Projectile _projectilePrefab;
     [SerializeField] private PartContainer _partContainer;
 
+    #region ITankPart implementation
     [SerializeField] private bool _isBuiltIn;
     public bool IsBuiltIn => _isBuiltIn;
 
+    [SerializeField] private Collider _partCollider;
+    public Collider PartCollider => _partCollider;
+
     public GameObject GameObject => gameObject;
     public PartContainer PartContainer => _partContainer;
+    #endregion
 
     private bool _isReadyForShoot = true;
     private Stopwatch stopwatch = new();
     private TankStatsController _tankStatsController;
+    private List<Collider> _tankColliders = new();
+
+    public void Initialize(List<Collider> tankColliders)
+    {
+        _tankColliders.Clear();
+        _tankColliders.AddRange(tankColliders);
+    }
 
     public void TryShoot()
     {
@@ -33,9 +56,12 @@ public class Gun : MonoBehaviour, ITankPart
 
         var projectile = (Projectile)ControllerGameObjectPooler.GetFromPrefab(_projectilePrefab);
 
-        projectile.transform.position = _firePoint.position;
-        projectile.Initialize(_shellInfo.Speed);
-        projectile.transform.LookAt(_firePoint.position + _firePoint.forward);
+        var spawnPosition = _firePoint.position;
+        spawnPosition.y = Spawn_Hight;
+
+        projectile.transform.position = spawnPosition;
+        projectile.Initialize(_shellInfo.Speed, _tankColliders);
+        projectile.transform.LookAt(spawnPosition + _firePoint.forward);
         _isReadyForShoot = false;
 
         projectile.OnHit += ReactionCollision;
@@ -50,22 +76,15 @@ public class Gun : MonoBehaviour, ITankPart
         projectile.ReturnToPool();
     }
 
-    private float _currentReloadTime;
-
-    void Update()
-    {
-        _currentReloadTime = GetCurretTime();
-    }
-
     public float GetCurretTime()
     {
-        return (float)stopwatch.Elapsed.TotalSeconds / _reloadTime;
+        return (float)stopwatch.Elapsed.TotalSeconds / ReloadTime;
     }
 
     public async UniTask Reload(CancellationToken ct)
     {
         stopwatch.Restart();
-        await UniTask.Delay(TimeSpan.FromSeconds(_tankStatsController.ReloadStat.CalculateFinalValue(_reloadTime)), cancellationToken: ct);
+        await UniTask.Delay(TimeSpan.FromSeconds(ReloadTime), cancellationToken: ct);
 
         _isReadyForShoot = true;
         stopwatch.Stop();
@@ -75,7 +94,7 @@ public class Gun : MonoBehaviour, ITankPart
     {
         List<Description> descriptions = new()
         {
-            new Description("Reload", _reloadTime.ToString()),
+            new Description("Reload", _baseReloadTime.ToString()),
             new Description("Speed", _shellInfo.Speed.ToString()),
             new Description("Penetration", _shellInfo.Penetration.ToString()),
             new Description("Damage", _shellInfo.Damage.ToString())

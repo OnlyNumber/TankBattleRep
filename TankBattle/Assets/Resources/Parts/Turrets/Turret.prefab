@@ -80,12 +80,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a599d2d2c72bca943bc060e625db6c6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurretMovement
+  _partContainer: {fileID: 3595594085334223878}
+  _partCollider: {fileID: 2354211583440432551}
+  _isBuiltIn: 0
   _statsModifiers: []
   _trajectoryLine: {fileID: 8399025005303784866}
   _lineLength: 5
-  _partContainer: {fileID: 3595594085334223878}
-  _isBuiltIn: 0
-  TurretStats:
+  _turretStats:
     RotationSpeed: 90
     MaxRotationAngle: 360
 --- !u!120 &7580836192090409554
