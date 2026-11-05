@@ -8,6 +8,9 @@ public class PartStatsWindow : Window
     [SerializeField] private RectTransform layoutForInfo;
     [SerializeField] private DescriptionBehaviour _descriptionBehaviourPrefab;
     [SerializeField] private Button _button;
+    [SerializeField] private TMPro.TMP_Text _buttonText;
+
+    [SerializeField] private TMPro.TMP_Text _partName;
 
     public event Action OnButtoPressed;
     private List<DescriptionBehaviour> _descriptions = new();
@@ -38,11 +41,23 @@ public class PartStatsWindow : Window
         }
     }
 
-    public void ClearDescription()
+    public void ClearAll()
     {
+        _partName.text = "";
+
         foreach (var item in _descriptions)
             Destroy(item.gameObject);
 
         _descriptions.Clear();
+    }
+
+    public void SetPartName(string name)
+    {
+        _partName.text = name;
+    }
+    
+    public void SetButtonText(string name)
+    {
+        _buttonText.text = name;
     }
 }

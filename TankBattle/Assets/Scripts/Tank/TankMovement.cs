@@ -7,10 +7,6 @@ public class TankMovement : MonoBehaviour
 {
     [SerializeField] private Rigidbody _rb;
 
-/*    private float _acceleration;
-    private float _deceleration;
-    private float _maxSpeed;
-    private float _rotationSpeed;*/
     private HullStats _hullStats;
 
 

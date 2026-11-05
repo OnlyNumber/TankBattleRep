@@ -28,8 +28,8 @@ public class PlayerUI : MonoBehaviour
         _moneyText.text = PlayerInstance.Instance.PlayerData.MoneyCount.ToString();
 
         _enemySpawner = enemySpawner;
-        _enemySpawner.OnDeathSpawnedUnit += EnemiesTextUpdate;
-        _enemiesCountText.text = (_enemySpawner.CurrentDeadEnemies - _enemySpawner.EnemiesPerWave).ToString() + " / " + _enemySpawner.EnemiesPerWave.ToString();
+        _enemySpawner.OnChangedDeadEnemiesCount += EnemiesTextUpdate;
+        _enemiesCountText.text = (_enemySpawner.EnemiesPerWave - _enemySpawner.CurrentDeadEnemies).ToString() + " / " + _enemySpawner.EnemiesPerWave.ToString();
 
         playerTank.OnAddingTemporaryModifier += AddIcon;
     }
@@ -54,9 +54,9 @@ public class PlayerUI : MonoBehaviour
         Destroy(icon);
     }
 
-    private void EnemiesTextUpdate(TankBehaviour tankBehaviour)
+    private void EnemiesTextUpdate()
     {
-        _enemiesCountText.text = (_enemySpawner.CurrentDeadEnemies - _enemySpawner.EnemiesPerWave).ToString() + " / " + _enemySpawner.EnemiesPerWave.ToString();
+        _enemiesCountText.text = (_enemySpawner.EnemiesPerWave - _enemySpawner.CurrentDeadEnemies).ToString() + " / " + _enemySpawner.EnemiesPerWave.ToString();
     }
 
     private void MoneyTextUpdate(int moneyCount)

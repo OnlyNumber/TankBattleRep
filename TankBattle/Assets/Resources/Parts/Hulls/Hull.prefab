@@ -235,7 +235,7 @@ GameObject:
   - component: {fileID: 3705848486954680192}
   - component: {fileID: 2579461353245829795}
   - component: {fileID: 8479257064963295338}
-  - component: {fileID: 2306395792005133636}
+  - component: {fileID: 8022513782147698330}
   m_Layer: 8
   m_Name: HullModel
   m_TagString: Untagged
@@ -315,8 +315,8 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &2306395792005133636
-BoxCollider:
+--- !u!64 &8022513782147698330
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -333,9 +333,10 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1.0000001}
-  m_Center: {x: 0, y: 0, z: 0}
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &4085366768139761503
 GameObject:
   m_ObjectHideFlags: 0
@@ -517,7 +518,7 @@ MonoBehaviour:
     Side: 2
   <AimPosition>k__BackingField: {fileID: 9006845078314058668}
   _partContainer: {fileID: 7738774853609610604}
-  _partCollider: {fileID: 2306395792005133636}
+  _partCollider: {fileID: 8022513782147698330}
   _isBuiltIn: 0
   _statsModifiers: []
 --- !u!114 &7738774853609610604

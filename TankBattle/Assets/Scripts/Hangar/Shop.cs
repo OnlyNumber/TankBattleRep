@@ -25,6 +25,8 @@ public class Shop : MonoBehaviour
         _turretsList = PartsLoader.LoadParts<TurretMovement>();
 
         _partStatsWindow.OnButtoPressed += BuyCurrentItem;
+        _partStatsWindow.ClearAll();
+
         CreateGoods();
     }
 
@@ -60,21 +62,40 @@ public class Shop : MonoBehaviour
                 PartButton = Instantiate(_partButtonPrefab, place)
             };
 
+            currentPartInfo.PartButton.RectTransform.localPosition = Vector2.zero;
             currentPartInfo.PartButton.Button.onClick.AddListener(() => ShowItemInfo(currentPartInfo));
-            currentPartInfo.PartButton.Text.text = currentPartInfo.TankPart.GameObject.name;
+            currentPartInfo.PartButton.PartNameText.text = AddSpacesToString(currentPartInfo.TankPart.GameObject.name);
+            currentPartInfo.PartButton.PriceText.text = currentPartInfo.Price.ToString();
 
             _partGoodsInfos.Add(currentPartInfo);
         }
+    }
+
+    public static string AddSpacesToString(string name)
+    {
+        string spacedString = "";
+
+        for (int i = 0; i < name.Length; i++)
+        {
+            if (char.IsUpper(name[i]))
+                spacedString += " ";
+
+            spacedString += name[i];
+        }
+
+        return spacedString;
     }
 
     private void ShowItemInfo(PartGoodsInfo partGoodsInfo)
     {
         _currentGoods = partGoodsInfo;
 
-        _partStatsWindow.ClearDescription();
+        _partStatsWindow.ClearAll();
         _partStatsWindow.AddDescription(new Description("Price ", _currentGoods.Price.ToString()));
         _partStatsWindow.AddDescription(_currentGoods.TankPart.GetDescriptions().ToArray());
         _partStatsWindow.ActivateButton(_currentGoods.Price < PlayerInstance.Instance.PlayerData.MoneyCount);
+        _partStatsWindow.SetPartName(AddSpacesToString(_currentGoods.TankPart.GameObject.name));
+
     }
 
     private void BuyCurrentItem()
@@ -87,7 +108,7 @@ public class Shop : MonoBehaviour
         _partGoodsInfos.Remove(_currentGoods);
         _currentGoods = null;
 
-        _partStatsWindow.ClearDescription();
+        _partStatsWindow.ClearAll();
         _partStatsWindow.ActivateButton(false);
 
         PlayerInstance.Instance.Save();

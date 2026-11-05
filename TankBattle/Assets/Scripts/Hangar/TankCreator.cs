@@ -23,12 +23,26 @@ public class TankCreator : MonoBehaviour
 
     private Dictionary<ITankPart, PartSave> _createdParts = new();
     private List<PartButton> _createdButtons = new();
+
     private ITankPart _currentPart;
+    private ITankPart currentPart
+    {
+        get => _currentPart;
+        set
+        {
+            _currentPart = value;
+            OnChangingPart?.Invoke(_currentPart);
+        }
+    }
+
+
     private PartSave _currentPartSave;
 
     private ITankPart _currentHull;
 
     private int _currentSort = -1;
+
+    public System.Action<ITankPart> OnChangingPart;
 
     private void Start()
     {
@@ -62,12 +76,16 @@ public class TankCreator : MonoBehaviour
         });
 
         _partStatsWindow.OnButtoPressed += SellOrDisconect;
+        _partStatsWindow.ClearAll();
 
+        OnChangingPart += ChangePartStatsButtonName;
+        OnChangingPart += CheckCurrentPartNull;
     }
 
     [ContextMenu("Initialize")]
     private void Initialize()
     {
+        Debug.Log("Intialize tank creator");
         PlayerInstance.Instance.OnDataPartsUpdated += UpdateData;
 
         if (PlayerInstance.Instance.PlayerData.CurrentTank == null)
@@ -101,7 +119,6 @@ public class TankCreator : MonoBehaviour
 
     private void GetFirstTank()
     {
-        Debug.Log("GetFirstTank");
         _firstTank.HullArmor.PartContainer.FindMyParts();
         _firstTank.HullArmor.PartContainer.TurretPlace[0].Part.PartContainer.FindMyParts();
         PlayerInstance.Instance.PlayerData.CurrentTank = TankPartsToPartSave(_firstTank.HullArmor);
@@ -109,15 +126,18 @@ public class TankCreator : MonoBehaviour
 
     private void SellOrDisconect()
     {
-        if (_currentPart.IsBuiltIn)
+        if (currentPart == null)
             return;
 
-        if (GetPartsList(_currentHull).Contains(_currentPart))
+        if (currentPart.IsBuiltIn)
+            return;
+
+        if (GetPartsList(_currentHull).Contains(currentPart))
         {
             //Disconnect\\
 
-            if (_createdParts[_currentPart].PartSlotsTurret.Count > 0 &&
-            _createdParts[_currentPart].PartSlotsGuns.Count > 0)
+            if (_createdParts[currentPart].PartSlotsTurret.Count > 0 &&
+            _createdParts[currentPart].PartSlotsGuns.Count > 0)
             {
                 Debug.Log("Can t remove while attached parts");
                 return;
@@ -125,8 +145,8 @@ public class TankCreator : MonoBehaviour
 
             foreach (var item in _createdParts.Values)
             {
-                item.RemovePartFromTurrets(_createdParts[_currentPart]);
-                item.RemovePartFromGuns(_createdParts[_currentPart]);
+                item.RemovePartFromTurrets(_createdParts[currentPart]);
+                item.RemovePartFromGuns(_createdParts[currentPart]);
             }
 
             foreach (var part in _createdParts.Keys)
@@ -136,34 +156,35 @@ public class TankCreator : MonoBehaviour
 
                 foreach (var slot in part.PartContainer.TurretPlace)
                 {
-                    if (slot.Part == _currentPart)
+                    if (slot.Part == currentPart)
                         slot.Part = null;
                 }
 
                 foreach (var slot in part.PartContainer.GunPlace)
                 {
-                    if (slot.Part == _currentPart)
+                    if (slot.Part == currentPart)
                         slot.Part = null;
                 }
             }
 
+            _allParts.Add(_createdParts[currentPart]);
+            _createdParts.Remove(currentPart);
+            Destroy(currentPart.GameObject);
 
-            _allParts.Add(_createdParts[_currentPart]);
-            _createdParts.Remove(_currentPart);
-            Destroy(_currentPart.GameObject);
-
-            _currentPart = null;
+            currentPart = null;
             _currentPartSave = null;
 
             //_currentPart
             ShowSlots(true);
 
             UpdateData();
-            _partStatsWindow.ClearDescription();
+            _partStatsWindow.ClearAll();
+
+            ChangePartStatsButtonName(currentPart);
         }
         else
         {
-            if (_currentPart == null)
+            if (currentPart == null)
                 return;
 
             //Sell\\
@@ -171,10 +192,10 @@ public class TankCreator : MonoBehaviour
 
             _allParts.Remove(_currentPartSave);
 
-            Destroy(_currentPart.GameObject);
+            Destroy(currentPart.GameObject);
 
 
-            _currentPart = null;
+            currentPart = null;
             _currentPartSave = null;
 
             UpdateData();
@@ -193,12 +214,10 @@ public class TankCreator : MonoBehaviour
 
                 if (part != null)
                 {
-                    _currentPart = part;
-                    _currentPartSave = _createdParts[_currentPart];
+                    currentPart = part;
+                    _currentPartSave = _createdParts[currentPart];
 
-                    _partStatsWindow.ClearDescription();
-                    _partStatsWindow.AddDescription(_currentPart.GetDescriptions().ToArray());
-
+                    SetStats(currentPart);
                     return;
                 }
 
@@ -232,25 +251,27 @@ public class TankCreator : MonoBehaviour
             var pB = Instantiate(_partButtonPrefab);
             pB.transform.SetParent(_partButtonParent);
             _createdButtons.Add(pB);
-            pB.Text.text = parts[index].PartName;
-            pB.Button.onClick.AddListener(() => SetCurrentPart(partSave, CreatePart(PartsLoader.LoadPart(parts[index].PartName, parts[index].PartType).GetComponent<ITankPart>())));
+            pB.PartNameText.text = Shop.AddSpacesToString(parts[index].PartName);
+            pB.Button.onClick.AddListener(() => SetCurrentPart(
+                partSave,
+                CreatePart(PartsLoader.LoadPart(parts[index].PartName, parts[index].PartType).GetComponent<ITankPart>()))
+                );
         }
     }
 
     private void SetCurrentPart(PartSave partSave, ITankPart tankPart)
     {
-        if (_currentPart != null && !GetPartsList(_currentHull).Contains(_currentPart))
+        if (currentPart != null && !GetPartsList(_currentHull).Contains(currentPart))
         {
-            _createdParts.Remove(_currentPart);
-            Destroy(_currentPart.GameObject);
+            _createdParts.Remove(currentPart);
+            Destroy(currentPart.GameObject);
         }
 
-        _currentPart = tankPart;
+        currentPart = tankPart;
         _currentPartSave = partSave;
-        _partStatsWindow.ClearDescription();
-        _partStatsWindow.AddDescription(_currentPart.GetDescriptions().ToArray());
+        SetStats(currentPart);
 
-        _createdParts.Add(_currentPart, _currentPartSave);
+        _createdParts.Add(currentPart, _currentPartSave);
 
         if (tankPart.PartContainer != null)
         {
@@ -270,9 +291,9 @@ public class TankCreator : MonoBehaviour
                 ClearHull();
 
             _allParts.Remove(_currentPartSave);
-            _currentHull = _currentPart;
+            _currentHull = currentPart;
             _currentPartSave = null;
-            _currentPart = null;
+            currentPart = null;
 
 
         }
@@ -329,12 +350,12 @@ public class TankCreator : MonoBehaviour
         if (partSlot == null)
             return;
 
-        partSlot.Slot.Part = _currentPart;
-        _currentPart.GameObject.transform.SetParent(partSlot.Slot.Parent);
-        _currentPart.GameObject.transform.localPosition = Vector3.zero;
+        partSlot.Slot.Part = currentPart;
+        currentPart.GameObject.transform.SetParent(partSlot.Slot.Parent);
+        currentPart.GameObject.transform.localPosition = Vector3.zero;
 
         _allParts.Remove(_currentPartSave);
-        _currentPart = null;
+        currentPart = null;
         _currentPartSave = null;
 
         SaveParts();
@@ -441,6 +462,43 @@ public class TankCreator : MonoBehaviour
         slot.Index = index;
 
         _partSlotsList.Add(slot);
+    }
+
+    private void SetStats(ITankPart tankPart)
+    {
+        _partStatsWindow.ClearAll();
+
+        _partStatsWindow.SetPartName(Shop.AddSpacesToString(tankPart.GameObject.name));
+        _partStatsWindow.AddDescription(tankPart.GetDescriptions().ToArray());
+    }
+
+    private void ChangePartStatsButtonName(ITankPart part)
+    {
+        if (part == null)
+        {
+            _partStatsWindow.SetButtonText("");
+            _partStatsWindow.ActivateButton(false);
+
+            return;
+        }
+
+        _partStatsWindow.ActivateButton(true);
+
+        if (GetPartsList(_currentHull).Contains(part))
+        {
+            _partStatsWindow.SetButtonText("Disconnect");
+        }
+        else
+        {
+            _partStatsWindow.SetButtonText("Sell");
+        }
+
+    }
+
+    private void CheckCurrentPartNull(ITankPart part)
+    {
+        if (part == null)
+            _partStatsWindow.ClearAll();
     }
 
     private void ClearSlots()
@@ -577,7 +635,6 @@ public class TankCreator : MonoBehaviour
     }
 
 
-
     public static ITankPart PartSaveToTankParts(PartSave loadingPart, out Dictionary<PartSave, ITankPart> createdParts)
     {
 
@@ -585,6 +642,9 @@ public class TankCreator : MonoBehaviour
 
         Dictionary<PartSave, ITankPart> convertedParts = new();
         Queue<PartSave> partQueue = new();
+
+        if (loadingPart == null)
+            Debug.Log("loadingPart == null");
 
         firstPart = CreatePart(PartsLoader.LoadPart(loadingPart.PartName, loadingPart.PartType).GetComponent<HullArmor>());
 
@@ -635,6 +695,7 @@ public class TankCreator : MonoBehaviour
 
         return firstPart;
     }
+
     #endregion
 
     public static PartSave ConversionFromPart(ITankPart part)

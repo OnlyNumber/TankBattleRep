@@ -17,5 +17,3 @@ MonoBehaviour:
   StatsModifier:
   - Value: 0.5
     ModifierStat: 0
-  - Value: -0.5
-    ModifierStat: 4

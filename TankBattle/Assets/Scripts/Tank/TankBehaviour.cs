@@ -49,6 +49,9 @@ public class TankBehaviour : MonoBehaviour, IPooled
 
         var parts = TankCreator.GetPartsList(HullArmor);
 
+        parts.Remove(HullArmor);
+
+
         foreach (var item in parts)
             item.PartCollider.enabled = false;
 

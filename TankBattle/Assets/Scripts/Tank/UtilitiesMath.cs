@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class UtilitiesMath
 {
+
+    public static Vector3 NoAccessibleVector = Vector3.one * -999;
     private const int Base_Critical_Chance = 20;
 
     private static string TemporaryModifierDataPath = "TemporaryMofiers";
@@ -31,13 +33,19 @@ public static class UtilitiesMath
 
         if (shellInfo.Penetration >= effectiveArmor)
         {
-            tankBehaviour.TankHealthSystem.CurrentHealth -= damage;
 
-            //Debug.Log("Last health " + tankBehaviour.TankHealthSystem.CurrentHealth + "Penetrated " + effectiveArmor + "Shell " + shellInfo.Penetration);
+            tankBehaviour.TankHealthSystem.CurrentHealth = tankBehaviour.TankHealthSystem.CurrentHealth - damage;
+            
+            /*
+            Debug.Log(tankBehaviour.gameObject.name + 
+            " Last health " + tankBehaviour.TankHealthSystem.CurrentHealth + 
+            " Penetrated " + effectiveArmor + 
+            " Shell " + shellInfo.Penetration);
+            */
         }
         else
         {
-            //Debug.Log($"Not penetrated" + "Shell " + shellInfo.Penetration + " effective armor: " + effectiveArmor);
+            //Debug.Log($"Not penetrated" + " Shell " + shellInfo.Penetration + " Effective armor: " + effectiveArmor);
         }
     }
 
@@ -82,4 +90,19 @@ public static class UtilitiesMath
         tankBehaviour.AddTemporaryModifier(temporaryModifier);
 
     }
+
+    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> input)
+{
+    List<T> output = new();
+    //System.Random rand = new System.Random();
+
+    foreach (var entry in input)
+    {
+        int position = Random.Range(0,output.Count);
+        output.Add((position == output.Count) ? entry : output[position]);
+        output[position] = entry;
+    }
+
+    return output;
+}
 }

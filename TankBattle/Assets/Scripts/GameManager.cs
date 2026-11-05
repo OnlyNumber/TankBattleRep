@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        Delay().Forget();
+        PlayerInstance.Instance.OnDataLoaded += Initialize;
+
     }
 
     private void Initialize()
@@ -49,7 +50,6 @@ public class GameManager : MonoBehaviour
 
         _camera.Follow = playerTank.transform;
 
-
         _enemySpawner.Initialize(playerTank);
         _enemySpawner.OnDeathSpawnedUnit += _rewardGiver.GetRewardForEnemy;
         _enemySpawner.OnEndWaves += () => _rewardGiver.RewardMessage(playerTank.transform.position, 200);
@@ -57,13 +57,6 @@ public class GameManager : MonoBehaviour
 
         if (SpawnWaves)
             _enemySpawner.ActivateWaves();
-    }
-
-    private async UniTaskVoid Delay()
-    {
-        await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
-
-        Initialize();
     }
 
     private TankBehaviour CreatePlayer()

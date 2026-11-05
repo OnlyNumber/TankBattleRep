@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2075296132517487046}
   - component: {fileID: 8141294019940362427}
   m_Layer: 0
-  m_Name: TestingEnemyTank
+  m_Name: DefaultEnemyTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

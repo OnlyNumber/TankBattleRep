@@ -22,6 +22,9 @@ public class FollowingHealthBar : MonoBehaviour
 
         _targetHealth = tankBehaviour.TankHealthSystem;
         _targetHealth.OnHealthChanged += ChangeHealthBar;
+        _targetHealth.OnHealthChanged += DeathCheck;
+
+        ChangeHealthBar();
 
         tankBehaviour.OnAddingTemporaryModifier += AddIcon;
     }
@@ -42,6 +45,13 @@ public class FollowingHealthBar : MonoBehaviour
         _barText.text = _targetHealth.CurrentHealth + " / " + _targetHealth.MaxHealth;
         _barSlider.value = (float)_targetHealth.CurrentHealth / (float)_targetHealth.MaxHealth;
     }
+
+    private void DeathCheck()
+    {
+        if (_targetHealth.CurrentHealth <= 0)
+            Destroy(gameObject);
+    }
+
 
     private void AddIcon(TemporaryModifier modifier)
     {

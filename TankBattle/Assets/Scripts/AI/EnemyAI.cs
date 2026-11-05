@@ -34,6 +34,8 @@ public class EnemyAI : MonoBehaviour
         ActivityAsync().Forget();
     }
 
+    public bool FireTarget = true;
+
     private async UniTask ActivityAsync()
     {
         while (!_cts.IsCancellationRequested)
@@ -42,7 +44,8 @@ public class EnemyAI : MonoBehaviour
                 _cts.Cancel();
 
             GoToTheTarget();
-            TryShootTarget();
+            if (FireTarget)
+                TryShootTarget();
 
             await UniTask.Yield(PlayerLoopTiming.Update);
         }

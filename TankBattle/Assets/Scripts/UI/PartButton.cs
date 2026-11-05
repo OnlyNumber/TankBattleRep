@@ -5,5 +5,7 @@ public class PartButton : MonoBehaviour
 {
     public RectTransform RectTransform;
     public Button Button;
-    public TMPro.TMP_Text Text;
+    public TMPro.TMP_Text PartNameText;
+    public TMPro.TMP_Text PriceText;
+
 }

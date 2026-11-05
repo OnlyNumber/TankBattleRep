@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -25,6 +26,12 @@ public class PlayerInstance : MonoBehaviour
 
         Instance = this;
 
+        StartCoroutine(LoadAll());
+    }
+
+    private IEnumerator LoadAll()
+    {
+        yield return new WaitForSeconds(0.5f);
         Load();
     }
 

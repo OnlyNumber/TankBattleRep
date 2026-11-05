@@ -36,7 +36,9 @@ public static class PartsLoader
     public static GameObject LoadPart(string name, PartType partType)
     {
         string path = "";
-
+        try
+        {
+        
         switch (partType)
         {
             case PartType.Hull:
@@ -65,7 +67,13 @@ public static class PartsLoader
                 return loadedParts[path];
         }
 
+        }
+        catch
+        {
+            path = Hulls_Path + "/" + name;
 
+            Debug.Log(" Broken path " + path);
+        }
         return null;
     }
 }

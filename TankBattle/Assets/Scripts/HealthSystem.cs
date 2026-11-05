@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[Serializable]
 public class HealthSystem
 {
     public int MaxHealth
@@ -15,7 +16,7 @@ public class HealthSystem
         set
         {
             _currentHealth = value;
-            
+
             if (_currentHealth > MaxHealth)
                 _currentHealth = MaxHealth;
 

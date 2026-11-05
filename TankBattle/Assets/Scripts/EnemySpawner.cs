@@ -1,14 +1,16 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks.Triggers;
 using UnityEngine;
+using Zenject.SpaceFighter;
 
 [System.Serializable]
 public class EnemySpawner
 {
     [SerializeField] private Transform ParentForAI;
 
-    [SerializeField] private TankBehaviour enemyTankPrefab;
+    [SerializeField] private List<TankBehaviour> enemyTankPrefabs;
     [SerializeField] private EnemyAI enemyAIPrefab;
     [SerializeField] private FollowingHealthBar healthBarPrefab;
 
@@ -26,12 +28,17 @@ public class EnemySpawner
 
     private TankBehaviour _targetTank;
     private int currentWave;
+    private int _currentDeadEnemies;
     public int CurrentDeadEnemies
     {
-        get;
-        private set;
+        get => _currentDeadEnemies;
+        private set
+        {
+            _currentDeadEnemies = value;
+            OnChangedDeadEnemiesCount?.Invoke();
+        }
     }
-
+    public Action OnChangedDeadEnemiesCount;
     public Action<TankBehaviour> OnDeathSpawnedUnit;
     public Action OnEndWaves;
 
@@ -51,20 +58,25 @@ public class EnemySpawner
 
         currentWave++;
 
-        SpawnWave();
+        PlayerInstance.Instance.StartCoroutine(SpawnWave());
     }
 
-    public void SpawnWave()
+    public IEnumerator SpawnWave()
     {
         for (int i = 0; i < EnemiesPerWave; i++)
         {
-            var tank = GameObject.Instantiate(enemyTankPrefab);
+            var position = CheckPosition(_spawnPositions);
+            if (position == UtilitiesMath.NoAccessibleVector)
+                yield return null;
+
+            var tank = GameObject.Instantiate(enemyTankPrefabs[UnityEngine.Random.Range(0, enemyTankPrefabs.Count)]);
             var tankAI = GameObject.Instantiate(enemyAIPrefab);
             var tankHealthBar = GameObject.Instantiate(healthBarPrefab);
 
             tank.SetUpParts(tank.GetComponentInChildren<HullArmor>());
             tank.Initialize();
-            tank.transform.position = _spawnPositions[UnityEngine.Random.Range(0, _spawnPositions.Count)].position;
+
+            tank.transform.position = position;
 
             tankAI.transform.SetParent(ParentForAI);
             tankAI.Initialize(tank, _targetTank);
@@ -73,7 +85,22 @@ public class EnemySpawner
             tankHealthBar.Initialize(tank.transform, tank);
 
             tank.OnDeath += DeathOfEnemy;
+
+            yield return new WaitForSeconds(0.2f);
         }
+
+        yield return null;
+    }
+
+    private Vector3 CheckPosition(List<Transform> transforms)
+    {
+        foreach (var item in transforms.Shuffle())
+        {
+            if (!Physics.Raycast(item.position, Vector3.up))
+                return item.position;
+        }
+
+        return UtilitiesMath.NoAccessibleVector;
     }
 
     private void DeathOfEnemy(TankBehaviour tankBehaviour)
