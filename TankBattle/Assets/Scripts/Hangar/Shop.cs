@@ -26,6 +26,7 @@ public class Shop : MonoBehaviour
 
         _partStatsWindow.OnButtoPressed += BuyCurrentItem;
         _partStatsWindow.ClearAll();
+        _partStatsWindow.ActivateButton(false);
 
         CreateGoods();
     }

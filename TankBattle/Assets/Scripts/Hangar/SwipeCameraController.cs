@@ -47,27 +47,45 @@ public class SwipeCameraController : MonoBehaviour
         UpdateCameraTransform();
     }
 
+    public static int GetActiveTouches()
+    {
+        var touches = Touchscreen.current.touches;
+
+        int activeTouches = 0;
+
+        foreach (var touch in touches)
+        {
+            if (touch.press.isPressed)
+            {
+                activeTouches++;
+            }
+        }
+
+        return activeTouches;
+    }
+
     private void HandleRotationInput()
     {
         Vector2 currentPointerPos = Vector2.zero;
         bool isPressing = false;
         bool wasPressedThisFrame = false;
 
-        // 1. Читання миші
-        if (Mouse.current != null)
-        {
-            currentPointerPos = Mouse.current.position.ReadValue();
-            isPressing = Mouse.current.leftButton.isPressed;
-            wasPressedThisFrame = Mouse.current.leftButton.wasPressedThisFrame;
-        }
         // 2. Читання тачскріна (один палець для обертання)
-        else if (Touchscreen.current != null && Touchscreen.current.touches.Count == 1)
+        if (Touchscreen.current != null && GetActiveTouches() == 1)
         {
             var touch = Touchscreen.current.primaryTouch;
             currentPointerPos = touch.position.ReadValue();
             isPressing = touch.press.isPressed;
             wasPressedThisFrame = touch.press.wasPressedThisFrame;
         }
+        // 1. Читання миші
+        else if (Mouse.current != null)
+        {
+            currentPointerPos = Mouse.current.position.ReadValue();
+            isPressing = Mouse.current.leftButton.isPressed;
+            wasPressedThisFrame = Mouse.current.leftButton.wasPressedThisFrame;
+        }
+
 
         if (wasPressedThisFrame)
         {
@@ -100,7 +118,7 @@ public class SwipeCameraController : MonoBehaviour
             }
         }
         // Зум Pinch-to-Zoom (двома пальцями на смартфоні)
-        else if (Touchscreen.current != null && Touchscreen.current.touches.Count >= 2)
+        else if (Touchscreen.current != null && GetActiveTouches() >= 2)
         {
             var touch0 = Touchscreen.current.touches[0];
             var touch1 = Touchscreen.current.touches[1];

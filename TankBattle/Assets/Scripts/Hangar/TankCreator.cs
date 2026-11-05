@@ -35,7 +35,6 @@ public class TankCreator : MonoBehaviour
         }
     }
 
-
     private PartSave _currentPartSave;
 
     private ITankPart _currentHull;
@@ -77,6 +76,8 @@ public class TankCreator : MonoBehaviour
 
         _partStatsWindow.OnButtoPressed += SellOrDisconect;
         _partStatsWindow.ClearAll();
+
+        _partStatsWindow.ActivateButton(false);
 
         OnChangingPart += ChangePartStatsButtonName;
         OnChangingPart += CheckCurrentPartNull;
@@ -202,11 +203,27 @@ public class TankCreator : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void LateUpdate()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        bool isPressed = false;
+        Vector2 pointPosition = Vector2.one; 
+
+        if (Touchscreen.current != null && SwipeCameraController.GetActiveTouches() == 1)
         {
-            var ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+            isPressed = true;
+            var touch = Touchscreen.current.primaryTouch;
+            pointPosition = touch.position.ReadValue();
+
+        }
+        else if (Mouse.current != null)
+        {
+            isPressed = Mouse.current.leftButton.wasPressedThisFrame;
+            pointPosition = Mouse.current.position.ReadValue();
+        }
+
+        if (isPressed)
+        {
+            var ray = Camera.main.ScreenPointToRay(pointPosition);
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
