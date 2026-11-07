@@ -91,7 +91,6 @@ public class TankCreator : MonoBehaviour
 
         if (PlayerInstance.Instance.PlayerData.CurrentTank == null)
         {
-            Debug.Log("CurrentTank == null");
             GetFirstTank();
             PlayerInstance.Instance.Save();
         }
@@ -245,6 +244,9 @@ public class TankCreator : MonoBehaviour
 
                 if (part != null)
                 {
+                    if (currentPart != null && !GetPartsList(_currentHull).Contains(currentPart))
+                        Destroy(currentPart.GameObject);
+
                     currentPart = part;
                     _currentPartSave = _createdParts[currentPart];
 
@@ -254,8 +256,6 @@ public class TankCreator : MonoBehaviour
 
                 if (currentPart is HullArmor)
                 {
-                    Debug.Log("is HullArmor");
-
                     TryPlaceHullArmor();
                     return;
                 }
@@ -566,12 +566,6 @@ public class TankCreator : MonoBehaviour
             Destroy(item.GameObject);
         }
 
-    }
-
-    [ContextMenu("CheckHull")]
-    public void CheckHull()
-    {
-        Debug.Log(_currentHull == null);
     }
 
     #region Save and Load
