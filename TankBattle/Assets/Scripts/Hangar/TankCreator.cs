@@ -147,12 +147,16 @@ public class TankCreator : MonoBehaviour
                 return;
             }
 
+            var disconnectedParts = GetPartsList(_currentPart);
+
+            //Find and remove part on which placed currentPart from PartSave
             foreach (var item in _createdParts.Values)
             {
                 item.RemovePartFromTurrets(_createdParts[currentPart]);
                 item.RemovePartFromGuns(_createdParts[currentPart]);
             }
 
+            //Find and remove part on which placed currentPart from ITankPart
             foreach (var part in _createdParts.Keys)
             {
                 if (part.PartContainer == null)
@@ -171,15 +175,16 @@ public class TankCreator : MonoBehaviour
                 }
             }
 
-            _allParts.Add(_createdParts[currentPart]);
-            _createdParts.Remove(currentPart);
+            foreach (var part in disconnectedParts)
+            {
+                _allParts.Add(_createdParts[part]);
+                _createdParts.Remove(part);
+            }
+
             Destroy(currentPart.GameObject);
 
             if (currentPart is HullArmor && currentPart == _currentHull)
-            {
-                Debug.Log("Disconnect _currentHull = null");
                 _currentHull = null;
-            }
 
             currentPart = null;
             _currentPartSave = null;
