@@ -31,4 +31,13 @@ public static class ControllerGameObjectPooler
 
         return pool.ObjectPool.Get();
     }
+
+    public static void ClearPools()
+    {
+        foreach (var pool in _dictionary.Values)
+        {
+            pool.ObjectPool.Clear();
+        }
+    }
+
 }

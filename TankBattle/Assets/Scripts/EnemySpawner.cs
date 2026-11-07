@@ -56,6 +56,7 @@ public class EnemySpawner
             return;
         }
 
+        CurrentDeadEnemies = 0;
         currentWave++;
 
         PlayerInstance.Instance.StartCoroutine(SpawnWave());
@@ -109,10 +110,7 @@ public class EnemySpawner
 
         CurrentDeadEnemies++;
         if (CurrentDeadEnemies >= EnemiesPerWave)
-        {
-            CurrentDeadEnemies = 0;
             ActivateWaves();
-        }
 
     }
 

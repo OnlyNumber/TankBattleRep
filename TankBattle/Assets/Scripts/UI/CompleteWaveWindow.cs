@@ -19,6 +19,7 @@ public class CompleteWaveWindow : Window
 
     private void LoadHangar()
     {
+        ControllerGameObjectPooler.ClearPools();
         PlayerInstance.Instance.Save();
         SceneController.LoadScene(SceneIndex.Hangar);
     }

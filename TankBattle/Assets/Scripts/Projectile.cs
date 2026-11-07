@@ -82,5 +82,4 @@ public class Projectile : MonoBehaviour, IPooled
         _gameObjectPool.ObjectPool.Release(this);
     }
 
-
 }
